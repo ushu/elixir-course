@@ -1,0 +1,628 @@
+# Elixir pour de vrai
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.16.1"},
+  {:pythonx, "~> 0.4.2"},
+  {:kino_pythonx, "~> 0.1.0"}
+])
+```
+
+```pyproject.toml
+[project]
+name = "project"
+version = "0.0.0"
+requires-python = "==3.13.*"
+dependencies = []
+```
+
+## Introduction
+
+Dans le notebook précédent, nous nous étions concentrés sur les caractéristiques communes à Elixir et Python, afin de vous accompagner dans la transition d'un langage vers l'autre.
+
+Évidemment cette comparaison a ses limites: si les deux langages étaient totalement équivalents, nous ne serions pas en train d'apprendre Elixir !
+
+Ce nouveau Notebook a deux objectifs:
+
+* explorer les bases du langage d'une façon plus approfondie: lister les différents types, découvrir les conteneurs de données (listes, etc.)
+* commencer à illustrer les différences – syntaxiques mais pas que – entre Elixir et Python, afin de vous rendre plus efficaces dans votre pratique de la programmation
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Les types de base
+
+Tous les langages de programmation, quels qu'ils soient, proposent un certain nombre de type de données qu'ils peuvent manipuler : chaînes de caractères, nombre, tableaux etc.
+
+Elixir ne fait pas exception, et le but de cette section est donc de vous présenter ces types, dont certains vous seront familiers, et d'autres constitueront une nouveauté.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Les types numériques
+
+Comme évoqué dans notre précédent notebook, Elixir propose deux types destinés à stocker des valeurs numériques:
+
+* le type `integer` correspont à des _entiers 64 bits_
+* le type `float` correspond à de nombre à _virgule flottant 64 bits_ (dits aussi "double précision")
+
+Il est possible de tester très facilement le type d'une valeur – ou d'une variable – via des fonctions dédiées:
+
+```elixir
+is_float(3.14)
+```
+
+```elixir
+is_integer(42)
+```
+
+```elixir
+# Fonctionne avec les integer ou les floats
+IO.puts( is_number(3.14) )
+IO.puts( is_number(42) )
+```
+
+Elixir supporte également différents formats de saisie pour ces valeurs, telles que:
+
+* la notation avec exposant pour les flottants:
+  ```elixir
+  1.0e10 # 👉 10000000000.0
+  ```
+* la notation avec des séparateurs "\_" pour les longs entiers (ou flottants)
+  ```elixir
+  1_000_000_000    # 👉 1000000000
+  1_000_000_000.42 # 👉 1000000000.42
+  ```
+* les notations binaires, octales (base 8) ou hexadécimale (base 16) pour les entiers:
+  ```elixir
+  0b110011 # 👉 52  (en binaire)
+  0o444    # 👉 292 (en octal)
+  0xff     # 👉 255 (en hexa)
+  ```
+
+<!-- livebook:{"break_markdown":true} -->
+
+Toutes les **opérations** arithmétiques classiques sont supportées:
+
+* la multiplication avec `*`
+* la division avec `/`
+* l'addition avec `+`
+* la soustraction avec `-`
+
+De plus, Elixir supporte l'opérateur d'exponentiation `**` comme Python.
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### Autres fonctions mathématiques
+
+Elixir est généralement moins bien équipé que Python en ce qui concerne le calcul mathématique: en effet, le focus du langage (les sytèmes distributés) n'est pas le même que celui de Python et cela se ressent au niveau des fonctions disponibles.
+
+Tout n'est pas pas perdu cependant !
+Il existe en effet deux solutions pour manipuler des objets mathématiques en Elixir:
+
+1. utiliser les fonctionnalités issues de Erlang, et en particulier son module `:math` qui donne les principales fonctions usuelles, par ex. les fonctions trigonométriques
+2. utiliser [`Nx`, qui est "le numpy d'Elixir"](https://github.com/elixir-nx/nx/tree/main/nx#readme) et que nous aborderons plus tard dans ce cours
+
+<!-- livebook:{"break_markdown":true} -->
+
+Voici un exemple d'utilisation du module `:math` d'Erlang, vous remarquerez tout de suite que la "syntaxe d'appel est différente".
+
+En effet: le nom du module Erlang est un "atome" Elixir – une notion que nous aborderons plus loin dans ce cours – commençant par `:`. C'est cette différence qui nous permet de différencier les appels à la "librairie standard Elixir" des appels au sous-système Erlang.
+
+Vous pouvez donc évaluer la cellule suivante:
+
+```elixir
+:math.cos(44)
+```
+
+ce qui est équivalent, en Erlang (ici pour votre culture, pas la peine de mémoriser ça !) à:
+
+```erlang
+math:cos(44).
+```
+
+### Les atomes
+
+Nous les avons évoqués à plusieurs reprises, il est temps de définir ce qu'est un atome: c'est une **constante nommée** du langage.
+
+_Qu'est-ce que ça peut bien vouloir dire ?_
+
+Il est parfois nécessaire, dans un programme, de définir certaines constantes pour qualifier des valeurs particulières:
+
+* la constante `true` (équivalente au `True` Python) quand un test est vrai
+* la constante `false` (équivalente au `False` Python) quand un test est faux
+* la constante `nil` (équivalente au `None` Python) et qui marque une absence de valeur
+
+toutes ces constantes sont appelées des atomes en Elixir:
+
+```elixir
+is_atom(true)
+```
+
+```elixir
+is_atom(false)
+```
+
+```elixir
+is_atom(nil)
+```
+
+La différence avec Python, c'est qu'Elixir nous permet de définir nos _propres constantes_ pour qualifier certaines valeurs de nos programmes.
+
+Typiquement, les fonctions d'Elixir – comme `IO.puts/1` que nous avons déjà rencontrée – renvoient souvent `:ok` en cas de succès. Cette constant `:ok` est un atome:
+
+```elixir
+is_atom(:ok)
+```
+
+et vous pouvez facilement définir vos propres atomes: il suffit de nommer la constante en commençant par `:` suivi d'une suite de lettres contigües, éventuellement séparées par des `_`:
+
+```elixir
+:je_suis_un_atome
+:moi_aussi
+:idem
+```
+
+_Quel est l'intérêt de ce nouveau type ?_
+
+L'intérêt de ce type est multiple:
+
+* définir des "valeurs de référence" qui ont un rôle particulier dans mon programme: pensez à l'atome `:ok` que nous avons évoqué et qui marque le succès d'un appel de fonction. De la même façon de nombreuses fonctions renvoient `:error` en cas d'erreur
+* par rapport à utiliser une chaîne de caractères comme on le ferait en Python, on gagne en perfomance: en effet Elixir garantit que chaque atome identique (par ex. "tous les `:ok`) pointent vers la même adresse mémoire, rendant ainsi la comparaison très rapide
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### Autre types d'atomes
+
+Il existe également d'autres types d'atomes:
+
+* tous les noms de modules elixir sont des atomes
+* on peut créer des atomes avec des espaces ou d'autres caractères en utilisant la syntaxe: `:"un atome avec des espaces"`
+
+```elixir
+# le nom du module IO est un atome
+is_atom(IO)
+```
+
+```elixir
+# c'est également valable pour les modules "emboités" (dont nous parlerons plus tard)
+defmodule RootModule do
+  defmodule NestedModule do
+  end
+end
+
+is_atom(RootModule.NestedModule)
+```
+
+```elixir
+is_atom( :"atome avec des espaces et des emojis 🚀" )
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Les conteneurs: bases
+
+Elixir dispose d'une bibliothèque de conteneurs, très semblables à ceux dont on dispose en Python.
+Comme à l'accoutumée dans ce cours, nous travaillerons en mettant en parallèle les deux langages afin de faciliter la compréhension des notions exposées.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Les tuples
+
+Il s'agit d'un groupement de valeurs, éventuellement de natures différentes. Pour rappel, voici la façon dont les tuples se déclarent en Python:
+
+```python
+my_tuple = (1, "a", 3.14)
+print(f"{my_tuple=}")
+
+# affichage des différentes valeurs
+print(f"{my_tuple[0]=}")
+print(f"{my_tuple[1]=}")
+print(f"{my_tuple[2]=}")
+```
+
+En Elixir, la syntaxe est subtilement différente:
+
+* on utilisera des crochets `{` et `}` )plutôt que les parenthèses utilisées en Python)
+* [l'operateur `elem`](https://hexdocs.pm/elixir/1.18.3/Kernel.html#elem/2) permet de récupérer la valeur disponible à un index donné
+
+```elixir
+my_tuple = {1, "a", 3.14}
+IO.inspect(my_tuple, label: "my_tuple")
+
+IO.puts("Valeurs contenues dans le tuple:")
+IO.inspect( elem(my_tuple, 0) )
+IO.inspect( elem(my_tuple, 1) )
+IO.inspect( elem(my_tuple, 2) )
+```
+
+💡 Elixir propose également une syntaxe dite de "pattern matching" que nous explorerons ensemble plus tard dans ce notebook.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Les listes
+
+Il s'agit probablement du conteneur qui est le plus différent entre Python en Elixir, et ce pour une bonne raison:
+
+* les "listes Python" ne sont pas des listes ! Le type `list` de Python, que vous connaissez, contient en réalité un tableau de valeurs contigues en mémoire
+* le type "liste" d'Elixir (d'Erlang en réalité) représente une véritable liste chaînée, c'est-à-dire une structure de données où les valeurs sont reliées entre elles par des "pointeurs" en mémoire
+* la liste Elixir est immutable, comme tout ce qui est en mémoire en Elixir d'ailleurs
+
+Tout cela doit vous sembler _bien abstrait pour l'instant_ mais nous allons illustrer ces concepts et ils feront sens.
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### La liste Elixir est une liste chaînée
+
+Commençons par définir une liste Elixir très simple: ce ne sera pas difficile vu que la syntaxe _est la même qu'en Python_:
+
+```python
+# Version Python
+my_list = [1, 2, 3, 4]
+my_list
+```
+
+
+
+<!-- livebook:{"break_markdown":true} -->
+
+en python, nous aurions une liste d'éléments contigüe en mémoire:
+
+```mermaid
+block-beta
+    l>"my_list"]
+    block:B
+        1 2 3 4
+    end
+    l-->B
+```
+
+```elixir
+# Version Elixir
+my_list = [1, 2, 3, 4]
+```
+
+Cette fois-ci, nous avons créé une séquence d'objets en mémoire qui se référencent les uns les autres:
+
+```mermaid
+block-beta
+    l>"my_list"]
+    block:B
+        aa["1"]
+        block:C
+            bb["2"]
+            block:D
+                cc["3"] 
+                dd["4"]
+                cc-->dd
+            end
+            bb-->D
+        end
+        aa-->C
+    end
+    l-->B
+```
+
+la liste `[1, 2, 3, 4]` est composée en méroire:
+
+* de la valeur `1`, suivie de la liste `[2, 3, 4]`
+* la valeur `[2, 3, 4]` est elle-même composée de la valeur `2`, suivie de la liste `[3, 4]`
+* la valeur `[3, 4]` est elle-même composée de la valeur `3`, suivie de la liste `[4]`
+* qui est elle-même composée de la valeur `4` sans liste suivante (`nil`)
+
+<!-- livebook:{"break_markdown":true} -->
+
+on peut d'ailleurs reconstituer notre liste grâce à l'opérateur `|` qui permet d'ajouter une valeur au début d'une liste:
+
+```elixir
+# on part d'une liste vide
+l_vide = []
+dbg(l_vide)
+
+# on lui ajoute la valeur "4" au début
+l_une_valeur = [ 4 | l_vide ]
+dbg(l_une_valeur)
+
+# on ajoute "3" au début de la liste suivante
+l_deux_valeurs = [ 3 | l_une_valeur ]
+dbg(l_deux_valeurs)
+
+# etc. etc.
+[
+  1 | [
+    2 | l_deux_valeurs
+  ]
+]
+```
+
+De cette construction découle un profil de perfomance très différent entre Elixir et Python:
+
+* en Elixir, il est **rapide** d'ajouter en début de liste et **lent** d'ajouter à la fin de la liste
+* en Python c'est l'inverse !
+* en Elixir il est rapide de **parcourir** la liste dans l'ordre mais lent d'accéder à un élément quelconque par son indice
+* en Python les deux sont perfomants ("random access")
+
+Mais alors, _pourquoi utilise-t-on cette approche compliquée dans les structures de données en Elixir_  ?
+
+L'explication se trouve – en partie – dans le paragraphe suivant:
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### Caractère immutable de la mémoire en Elixir
+
+Une des différences principales entre Elixir et Python, c'est qu'on ne peut pas modifier les valeurs qui ont été mises en mémoire.
+En effet, on peut _ré-assigner_ une variable dans notre code, mais la valeur en mémoire que référence cette variable n'est pas modifiable.
+
+Prenons, encore une fois, un exemple en Python pour comparer:
+
+```python
+# une liste Python d'exemple
+l = [1, 2, 3, 4]
+l[1] = 44 # 👈 on modifie notre liste
+l
+```
+
+Dans cet exemple, nous avons créé une liste en mémoire et l'avons modifiée, rien de spectaculaire.
+
+Ré-écrions cet exemple en Elixir:
+
+```elixir
+l = [1, 2, 3, 4]
+List.replace_at(l, 1, 44)
+l
+```
+
+Nous constatons que _la valeur de `l` n'a pas changé_ !
+
+En effet, une fois définir en mémoire, il n'est pas possible de modifier la valeur de cette liste.
+
+Mais alors _qu'a bien pu faire l'appel à `List.replace_at/3`_ ?
+
+En réalité, cet appel n'a pas modifié notre liste, mais a créé une nouvelle liste qui reprend les valeurs de la liste précédente et modifie uniquement la valeur de rang 1. Pour que notre code fonctionne, nous aurions donc dû ré-assigner la variable `l` avec le _résultat_ de l'appel à `replace_at` comme suit (concentrez-vous, le changement est subtil !):
+
+```elixir
+l = [1, 2, 3, 4]
+l = List.replace_at(l, 1, 44)
+l
+```
+
+Cette approche présente plusieurs avantages, et s'intégre bien avec les structures de données présentes dans Elixir:
+
+* le côté immutable simplifie énormément le fonctionnement "concurrent" du code: beaucoup de bugs des systèmes dits "parallèles" sont dûs à des accès concurrents à la mémoire, c-à-d. quand une partie du programme essaye de lire une information qu'une autre partie du programme essaye de modifier en même temps. En rendant la memoire non-modifiable, Elixir élimine toute une catégorie de bugs potentiels
+* les listes chaînées utilisées par Elixir permettent de ré-utiliser une partie des données lors des modifications. En effet, comme la mémoire n'est jamais modifiée il n'y a aucun risque à référencer une partie d'une autre liste dans une nouvelle liste afin d'économiser de la mémoire.
+
+Dans le cas présenté ci-desssu, lorsqu'on modifie le deuxième élément, la fin de la liste (`[3, 4]`) pourra être ré-utilisée comme fin de la nouvelle liste modifiée:
+
+```mermaid
+block-beta
+columns 2
+    l>"my_list"]
+    block:B
+        aa["1"]
+        block:C
+            bb["2"]
+            block:D
+                cc["3"] 
+                dd["4"]
+                cc-->dd
+            end
+            bb-->D
+        end
+        aa-->C
+    end
+    block:XB
+        Xaa["1"]
+        block:XC
+            Xbb["44"]
+            Xbb-->D
+        end
+        Xaa-->XC
+    end
+    l-->XB
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Les tableaux associatifs
+
+Ce sont l'équivalent des `dict` Python, et leur syntaxe est très différente: voici ci-dessous un exemple en Python et un exemple équivalent en Elixir (j'ai cherché un nom de mineur typique 🤷).
+
+<!-- livebook:{"break_markdown":true} -->
+
+en Python:
+
+```python
+# Rappel: un dictionnaire Python
+gonzague = {
+  "prenom": "Gonzague",
+  "nom": "de Saint-Louis",
+  "age": 20
+}
+
+print( f"l'élève {gonzague["prenom"]} {gonzague["nom"]} a {gonzague["age"]} ans" )
+```
+
+en Elixir:
+
+```elixir
+# avec un dictionnaire Elixir
+gonzague = %{
+  "prenom" => "Gonzague",
+  "nom" => "de Saint-Louis",
+  "age" => 20
+}
+
+IO.puts( "l'élève #{gonzague["prenom"]} #{gonzague["nom"]} a #{gonzague["age"]} ans" )
+```
+
+Les différences syntaxiques sont donc les suivantes:
+
+* on utilise les délimiteurs `%{` et `}` pour encadrer le tableau associatif (et non `{` et `}` comme en Python, qui en Elixir sont utilisés _pour les tuples_)
+* on sépare les clés des valeurs avec la "flèche" `=>`
+
+<!-- livebook:{"break_markdown":true} -->
+
+Il existe également des **raccourcis syntaxiques** au cas où l'on **utilise des atomes en guise de clés**, démonstration:
+
+```elixir
+gonzague = %{
+  prenom: "Gonzague",
+  nom: "de Saint-Louis",
+  age: 20
+}
+
+"l'élève #{gonzague.prenom} #{gonzague.nom} a #{gonzague.age} ans"
+```
+
+on remarque alors que:
+
+* les clés sont écrites avec "le `:` collé à la fin. Cette syntaxe est en fait équivalente à écrire:
+  ```elixir
+  %{
+    :prenom => "Gonzague",
+    :nom => "de Saint-Louis",
+    :age => 20
+  }
+  ```
+* on accède aux différentes valeurs avec une syntaxe `.` qui est également un raccourci:
+  ```elixir
+  gonzague.prenom
+  ```
+  est équivalent à
+  ```elixir
+  gonzague[:prenom]
+  ```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Pattern-matching simple
+
+Une des principales caractéristiques d'Elixir, en tant que langage, est la prévalence de la notion de "pattern matching" dans le langage. Nous allons commencer à explorer cette notion, à travers des exemples simples puis de plus en plus complexes.
+
+#### Opérateur `=`
+
+Nous avons vu plus tôt que nous pouvions assigner une variable avec une syntaxe identique à celle de Python:
+
+```elixir
+number_of_the_beast = 666
+```
+
+Ce que nous n'avons **pas** évoqué par contre, c'est que l'opérateur `=` d'Elixir n'est pas un _opérateur d'assignation_ mais un _opérateur de "matching"_: il essaye de vaire correspondre son membre de gauche avec son membre de droite.
+Dans notre cas ci-dessus:
+
+* à gauche nous avions la variable `number_of_the_beast`
+* à droite le nombre `666`
+
+et il a assigné la valeur à la variable pour satisfaire l'égalité.
+
+<!-- livebook:{"break_markdown":true} -->
+
+mais nous aurions parfaitement pu écrire (ce qui n'aurait aucun sens en Python):
+
+```elixir
+666 = 666
+```
+
+là où cette syntaxe devient plus intéressante, c'est lorsqu'on a une des valeurs plus complexes (des conteneurs typiquement) à gauche et à droite, par ex. un tuple:
+
+```elixir
+{a, b, c} = {1, 2, 3}
+
+dbg(a)
+dbg(b)
+dbg(c)
+```
+
+si vous avez bien suivi vos cours de Python, vous devriez me rétorque qu'on peut faire à peu près la même chose en Python:
+
+```python
+(a, b, c) = (1, 2, 3)
+
+print(f"{a=}")
+print(f"{b=}")
+print(f"{c=}")
+```
+
+mais Elixir pousse le concept beaucoup plus loin:
+
+* on peut avoir non seulement des variables mais aussi des valeurs à gauche
+* on peut également mapper des dictionnaires
+
+exemples:
+
+```elixir
+# avec un Tuple
+{1, a, 2} = {1, 44, 2}
+dbg(a)
+
+# avec une liste
+[3, c, d] = [3, 4, 5]
+dbg(c)
+dbg(d)
+
+# avec un dictionnaire
+%{
+  "nom" => nom,
+  "prenom" => prenom
+} = %{
+  "nom" => "Smith",
+  "prenom" => "John"
+}
+dbg(prenom)
+dbg(nom)
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## (Quelques) Structure conditionnelles
+
+Nous avons tenu jusqu'ici sans évoquer le `if`, c'est un exploit 🤣
+
+Il est temps de vous présenter les structures conditionnelles en Elixir: certaines sont connues, d'autres vous surprendrons. Dans tous les cas, vous devriez avoir absorbé suffisemment d'éléments de syntaxe pour comprendre les exemples suivants.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Le `if` (et son cousin `unless`)
+
+Comme la plupart des langages, Elixir dispose d'une structure de contrôle `if`. Sa syntaxe est proche de celle de Python, avec comme différence principale la présence de blocs définis entre `do` et `end`:
+
+```elixir
+# faites varier la valeur de a
+a = 100
+
+if a > 10 do
+  IO.puts "a est grand"
+  true # valeur retournée par le if = dernière expression de ce bloc
+else 
+  IO.puts "a est petit"
+  false # valeur retournée par le else = dernière expression de ce bloc
+end
+```
+
+💡 Vous remarquerez que le `if` retourne toujours une valeur, qui est la valeur de la dernière expression évaluée dans le bloc. Il est donc possible de récupérer cette valeur dans une variable:
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+was_big = if a > 10 do
+  true 
+else 
+  false
+end
+
+dbg(was_big)
+```
+
+comme évoqué il existe une construction `unless` qui est équivalent à un "`if` not":
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+unless a <= 10 do
+  IO.puts "a n'est pas petit"
+else
+  IO.puts "a n'est pas pas petit"
+end
+```
+
+### Le `case`
+
+Il est intéressant de noter que
