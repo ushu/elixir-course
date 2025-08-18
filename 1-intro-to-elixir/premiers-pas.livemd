@@ -1,0 +1,380 @@
+<!-- livebook:{"file_entries":[{"name":"cell-results.png","type":"attachment"},{"name":"help-jump.png","type":"attachment"},{"name":"hover-doc.png","type":"attachment"},{"name":"lb-completion.png","type":"attachment"},{"name":"module-outline.png","type":"attachment"},{"name":"nargs-in-signature.png","type":"attachment"},{"name":"run-icon.png","type":"attachment"},{"name":"same-name-diff-arity.png","type":"attachment"}]} -->
+
+# Permier pas
+
+```elixir
+Mix.install([
+  {:pythonx, "~> 0.4.2"},
+  {:kino_pythonx, "~> 0.1.0"}
+])
+```
+
+```pyproject.toml
+[project]
+name = "project"
+version = "0.0.0"
+requires-python = "==3.13.*"
+dependencies = []
+```
+
+## Votre premier exemple de code Elixir
+
+Reprenons l'exemple présenté dans les transparents du cours:
+
+- vous pouvez **exécuter** ce code en passant par votre souris au-dessus de la cellule et cliquer l'icône ▶️ située en haut à gauche ![](files/run-icon.png)
+- vous pouvez également passer votre pointeur de souris sur le module `IO` ou la fonction `puts` afin d'afficher la documentation associée ![](files/hover-doc.png)
+
+```elixir
+IO.puts("Hello, world !")
+```
+
+L'exécution de cette cellule affiche deux résultats:
+
+![](files/cell-results.png)
+
+Le `"Hello, world !"` est la valeur imprimée dans la console (comme un `print()` en Python) et correspond bien à la chaîne de caractères passée en argument.
+
+Le seconde valeur affichée – le `:ok` – est la valeur renvoyée par l'appel à la fonction `IO.puts/1` que nous avons exécutée. Il s'agit d'une constante Elixir (un _atome_) comme nous le verrons plus tard dans ce cours.
+
+## Prise en main: Elixir c'est comme Python 🚀
+
+Afin de faciliter la prise en main du langage, nous allons commencer par explorer plusieurs **types de données** simples et plusieures fonction disponibles dans la librairies standard d'Elixir.
+
+L'objectif de cette section du cours est donc:
+
+- de continuer à vous familiariser avec LiveBook
+- de profiter des similitudes du langage Elixir avec le langage Python que vous connaissez afin de commencer rapidement à l'utiliser
+- d'apprendre à parcourir la documentation d'Elixir
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Les types numériques en Elixir
+
+Nous retrouvons en Elixir les mêmes types numériques qu'en Python: à savoir les nombres entiers, et les nombres flottant. Comme vous le constaterez à l'usage, la syntaxe pour définir des variables et pour faire des calculs est très semblable à celle de Python.
+
+Commencez par évaluer la cellule suivante:
+
+```elixir
+# une valeure entière
+a = 2
+a + a
+```
+
+```elixir
+# une valeur en nombre flottants
+b = 3.14
+3 * b
+```
+
+💡 l'opérateur _division_ `/` effectue retourne une valeur flottante. Pour obtenir une division entière et/ou un reste il faudra utiliser les opérateurs [`div` (comme "divide")](https://hexdocs.pm/elixir/Kernel.html#div/2) et [`rem` (comme "reminder")](https://hexdocs.pm/elixir/Kernel.html#rem/2):
+
+```elixir
+div(10, 3)
+```
+
+```elixir
+rem(10, 3)
+```
+
+```elixir
+10 == 3 * div(10, 3) + rem(10, 3)
+```
+
+### Un petit exercice
+
+Commencez par lire la documentation Elixir disponible en ligne:
+
+- la section "Basic arithmetic" disponible [ici](https://hexdocs.pm/elixir/basic-types.html#basic-arithmetic)
+- la documentation de l'opérateur `**/2` disponible [ici](https://hexdocs.pm/elixir/1.15.5/Kernel.html#**/2)
+- la documentation de l'opérateur `abs/1` disponible [ici](https://hexdocs.pm/elixir/1.15.5/Kernel.html#abs/1)
+
+En remplaçant les appels `print()` de Python par des appels à `IO.puts`, traduisez le code suivant en Elixir:
+
+```python
+# valeur au cube
+print(10 ** 3)
+# arrondi
+print(round(3.14))
+# valeur absolue
+print(abs(-44))
+```
+
+```elixir
+# à vous de jouer !
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Ma première fonction
+
+Elixir fait partie des langages dits "fonctionnels". Cette famille de langage peut parfois être complexe à appréhender lorsque les langages en question disposent en plus de systèmes de types complexes, comme c'est le cas d'OCaml que certains d'entre vous ont étudié en prépa.
+
+Heureusement pour nous, Elixir est certes un langage fonctionnel, mais ce n'est pas un langage typé. Ainsi – comme vous avez pu le constater – son usage ressemble beaucoup à celui de Python, en particulier grâce à la déclaration des variables "au fil de l'eau" sans avoir besoin d'en préciser la nature au préalable.
+
+Ceci étant dit, en tant que langage fonctionnel, les fonctions ont une place absolument centrale dans la programmation en Elixir. Dans ce qui suit, nous allons explorer une des facons de définir une fonction, puis nous découvrirons au fur et à mesure de notre apprentissages d'autres approches et raccourcis syntaxiques disponibles dans le langage.
+
+<!-- livebook:{"break_markdown":true} -->
+
+Comme évoqué lors de la présentation des transparents de cours, les fonctions Elixir sont regroupées dans des **modules**. Ainsi pour pouvoir déclarer notre fonction, nous devront:
+
+- créer un **module**: avec `defmodule`
+- créer notre **fonction** _dans_ ce module: avec `def`
+
+en pratique:
+
+```elixir
+defmodule MonPremierModule do
+
+  def ma_premiere_fonction do
+    IO.puts("Bonjour je suis la fonction")
+  end
+
+end
+```
+
+on remarque plusieurs choses:
+
+- le "contenu" du module et de la fonction est délimité par un "bloc" qui commence par `do` et se termine par `end`
+- le nom du module est une suite de mots commençant par une majuscule et collés entre eux (on parle de "Pascal Calse")
+- le nom de la fonction est une suite de mots en minuscule relités par des `_` (on parle de "Snake Case")
+
+Ces conventions (en particulier sur le nom de module) sont à respecter lorsque l'on programme en Elixir.
+
+<!-- livebook:{"break_markdown":true} -->
+
+Une fois la cellule contenant votre fonction exécutée, celle-ci devient disponible à l'exécution, et l'éditeur Elixir inclus dans LiveBook va automatiquement vous proposer de compléter la saisie:
+
+![](files/lb-completion.png)
+
+De plus, le module ainsi défini apparaît automatiquement dans la table des matières ("outline") disponible dans le menu de gauche du LiveBook: il vous suffit de cliquer dessus pour "sauter" vers cette cellule.
+
+![](files/module-outline.png)
+
+Enfin, il est intéressant de noter que la documentation automatique qui apparaît lorsque le curseur de la souris survole un nom de fonction ou de module permet également de sauter vers la définition:
+
+- s'il s'agit d'une fonction définit dans le livebook courant, il est possible de sauter vers la cellul qui l'a définie
+- s'il s'agit d'une fonction de la librairie standard, il est possible de sauter directement vers la documentation de ladite fonction
+
+![](files/help-jump.png)
+
+il est temps d'appeler notre fonction:
+
+```elixir
+MonPremierModule.ma_premiere_fonction()
+```
+
+### Arguments des fonctions
+
+Il est possible de passer des arguments à nos fonctions, d'une manière très semblable à ce que propose Python.
+
+Pour se faire, vous pouvez ajouter votre liste de paramètres entre parenthèses à la déclaration, puis les rappeler au moment de l'appel, exemple:
+
+```elixir
+defmodule MonDeuxiemeModule do
+
+  def ajoute_et_un(x, y) do
+    x + y + 1
+  end
+
+end
+```
+
+```elixir
+MonDeuxiemeModule.ajoute_et_un(1, 2)
+```
+
+Cet exemple appelle plusieurs remarques:
+
+- tout d'abord, _contrairement_ à Python il n'y a pas d'appel à `return` pour renvoyer un résultat: la dernière expression d'un bloc (entre `do` et `end`) et renvoyée et constitue le résultat de la fonction
+- les plus observateurs d'entre vous auront peut-être remarqués que lorsque LiveBook complète le nom de la fonction, il rajoute `/2` à la fin du nom: ![](files/nargs-in-signature.png)
+  Il s'agit en fait du **nombre d'arguments** que prend la fonction !
+
+Ce dernier point illustre une différence fondamentale entre Python et Elixir: en Python, si on re-définit un fonction avec le même nom qu'une fonction existante , on "écrase" la première fonction qui devient donc inaccessible.
+Elixir, on contraire, permet d'avoir plusieurs fonction ayant le même nom _pourvu qu'elles n'aient pas le même nombre de paramètres_. Et c'est pour celà que le nombre de paramètre _fait partie du nome de la fonction_.
+
+En pratique:
+
+```elixir
+defmodule MonTroisiemeModule do
+
+  def add_et_un(x, y) do
+    x + y + 1
+  end
+
+  def add_et_un(x) do
+    x + x + 1
+  end
+
+end
+```
+
+Elixir détecte bien les deux variantes de cette fonction, comme le prouve LiveBook:
+
+![](files/same-name-diff-arity.png)
+
+et on peut les appeler séparément, ce qui aurait été impossible en Python:
+
+```python
+def add_et_un(x, y):
+  return x + y + 1
+
+def add_et_un(x):
+  x + x + 1
+
+add_et_un(1, 2) # 👈 la version à deux arguments "n'existe plus" !
+```
+
+### À vous de jouer
+
+Définissez un module permettant de convertir les degrés Celsius en degrés Farenheight et inversement.
+
+La formule de conversion, telle que donnée sur [Wikipedia](https://fr.wikipedia.org/wiki/Degré_Fahrenheit) est: $$T\text{(°F)} = \frac{9}{5}T\text{(°C)} + 32$$.
+
+💡 Vous trouverez ci-dessous un squelette de code à compléter. Ce dernier vous présente des fonctionnalités supplémentaires d'Elixir et Livebook, à savoir:
+
+- la possibilité de documenter une fonction en ajoutant un attribut `@doc` suivi d'une chaine de caractères juste avant la déclaration de la fonction
+- la possibilité d'écrire des chaines de caratères de plusieurs lignes, via les "triples quotes" (similaires à [ce qui exite en Python](https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str))
+- enfin, la possibilté d'inclure des tests simples dans cette documentation: il s'agit des [DocTests Elixir](https://hexdocs.pm/elixir/docs-tests-and-with.html#doctests) qui sont très proches des [doctest Python](https://docs.python.org/3/library/doctest.html)
+
+```elixir
+defmodule FahrenheitConverter do
+
+  @doc """
+  Convertit les degrés celsius en fahrenheit
+
+  ## Exemple
+
+      iex> FahrenheitConverter.c_to_f(0.0)
+      32.0
+
+      iex> FahrenheitConverter.c_to_f(100.0)
+      212.0
+  """
+  def c_to_f(celsius) do
+    0.0 # À COMPLÉTER
+  end
+
+  @doc """
+  Convertit les degrés celsius en fahrenheit
+
+  ## Exemple
+
+      iex> FahrenheitConverter.f_to_c(32)
+      0.0
+
+      iex> FahrenheitConverter.f_to_c(212.0)
+      100.0
+  """
+  def f_to_c(fahrenheit) do
+    0.0 # À COMPLÉTER
+  end
+
+end
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Quelques notions sur les chaînes de caractères
+
+Nous avons déjà vu comment définir une chaîne de caratères en Elixir:
+
+```elixir
+"Bonjour, je suis une chaîne de caractères"
+```
+
+Elixir dispose – comme Python d'ailleurs – d'un support très complet pour travailler avec des donnés textuelles. En particulier, le [module String](https://hexdocs.pm/elixir/1.14/String.html) propose toute une série de fonctions pour manipuler les chaînes de caractères qui peuvent se révéler bien pratiques.
+
+**Cependant** le support d'Elixir des chaînes de caractères est assez différent de celui de Python car plus "bas niveau". Sans entrer trop dans les détails – pour l'instant – une chaîne de caractères est un tableau d'octets en mémoire, que l'on peut interpréter comme une suite de caractères selon une nombre d'encodage appelée [Unicode](https://fr.wikipedia.org/wiki/Unicode).
+
+Lorsque vous définissez une chaînes de caractères en Elixir, vous définissez en fait un tableau de valeurs qui est à la fois:
+
+- une `bitstring` c'est-à-dire un tableau de "bits" (0 ou 1 en mémoire)
+- un `binary` c'est-à-dire une bitstring d'octets (dont la taille est multiple de 8)
+- et finalement ce `binary` contient du texte en Unicode
+
+On peut facilement vérifier toutes ces assetions via des fonctions dédiées:
+
+```elixir
+is_bitstring("Je suis une chaîne de caractères, c'est à dire un tableau de bits en mémoire")
+```
+
+```elixir
+is_binary("Je suis une chaîne de caractères, c'est à dire un tableau d'octets en mémoire")
+```
+
+```elixir
+String.valid?("Je suis une chaîne de caractères, c'est à dire un tableau caractères Unicode")
+```
+
+⚠️ **ATTENTION** en Elixir, il faut utiliser les guillements "doubles" et non les guillements simples `'` acceptés en Python ! Pour en savoir un peu plus, vous pouvez consulter la [documentation officielle](https://hexdocs.pm/elixir/binaries-strings-and-charlists.html).
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Concaténation de chaînes de caractères
+
+l'operateur `<>` permet de concaténer des chaînes de caractères – en réalité il concatène n'importe quel `binary` en mémoire, mais à notre niveau on ne l'utilisera que pour des chaînes de caractères – très facilement:
+
+```elixir
+"Bonjour " <> "le" <> " monde"
+```
+
+En général, on lui préfèrera une autre syntaxe qui se rapproche des ["format strings" de Python](https://docs.python.org/3/tutorial/inputoutput.html#tut-f-strings):
+
+```elixir
+bonjour = "Bonjour"
+le = "le"
+monde = "monde"
+
+"#{bonjour} #{le} #{monde}"
+```
+
+Attention cependant: contrairement à Python qui dispose d'une librairie très complète pour "formatter" différentes valeurs, dans ses format strings, l'interpolation standard d'Elixir se limite à concaténer les valeurs telles quelles.
+
+_Pour formatter des chaînes de caratères de façon "avancée", il faudrait utiliser les [fonctionnalités d'Erlang](https://www.erlang.org/doc/apps/stdlib/io.html#fwrite/3) (le système sous-jacent à Elixir) ce qui se fait très bien mais dépasse largement le cadre ce ce TP 😅_
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Exercice final
+
+Il est temps de réaliser un programme un peu plus conséquent.
+
+Pour réaliser cet exercice, vous aurez besoins de fonctions disponibles:
+
+- au sein du [module `Integer`](https://hexdocs.pm/elixir/1.18.4/Integer.html)
+- au sein du [module `String`](https://hexdocs.pm/elixir/1.18.4/String.html)
+
+Votre mission sera donc de créer un module permettant de formater un temps donné en secondes sous forme d'une chaîne de caractères `"HH:MM:SS"`
+
+```elixir
+defmodule TimeTools do
+  @moduledoc """
+  Outils de conversion de temps (secondes <-> texte HH:MM:SS).
+  """
+
+  @doc """
+  Convertit un nombre de secondes en une chaîne "HH:MM:SS"
+  avec padding sur 2 chiffres.
+
+  ## Exemples
+
+    iex> TimeTools.seconds_to_hms(0)
+    "00:00:00"
+
+    iex> TimeTools.seconds_to_hms(10)
+    "00:00:10"
+
+    iex> TimeTools.seconds_to_hms(90)
+    "00:01:30"
+
+    iex> TimeTools.seconds_to_hms(86400)
+    "24:00:00"
+  """
+  def seconds_to_hms(total_seconds) when is_integer(total_seconds) and total_seconds >= 0 do
+    h = "00"
+    m = "00"
+    s = "00"
+
+    "#{h}:#{m}:#{s}"
+  end
+end
+```
