@@ -491,26 +491,6 @@ on remarque alors que:
   gonzague[:prenom]
   ```
 
-<!-- livebook:{"break_markdown":true} -->
-
-#### Bonus: syntaxe de mise à jour
-
-Il existe une syntaxe spécifique pour mettre à jour les champs d'une [Map Elixir](https://hexdocs.pm/elixir/Map.html): il suffit de:
-
-* créer un bloc entre `%{` et `}`
-* mettre en premier la valeur précédente
-* puis le symbole `|`
-* puis les clés/valeurs à mettre à jour
-
-exemple:
-
-```elixir
-ernest = %{
-  # Ernest a tous les champs de gonzague, à l'exception du prénom
-  gonzague | prenom: "Ernest"
-}
-```
-
 <!-- livebook:{"branch_parent_index":0} -->
 
 ## Pattern-matching simple
@@ -590,18 +570,6 @@ dbg(prenom)
 dbg(nom)
 ```
 
-#### Pattern matching sur les listes chainées
-
-Il est possible de faire du pattern-matching en utilisant l'opérateur `|` sur les listes:
-
-```elixir
-ex_list = [1, 2, 3, 4]
-
-[a | rest] = ex_list
-dbg(a)
-dbg(rest)
-```
-
 <!-- livebook:{"branch_parent_index":0} -->
 
 ## (Quelques) Structure conditionnelles
@@ -655,96 +623,6 @@ else
 end
 ```
 
-### Le `cond`
-
-Le `cond` est la construction Elixir qui remplace le `elif` de Python: elle permet d'enchaîner les tests les uns après les autres, jusqu'à qu'une des branches soit vraie.
-
-Soit une valeur de référence:
-
-```elixir
-a = 60
-```
-
-Partons d'un exemple en Python:
-
-<!-- livebook:{"reevaluate_automatically":true} -->
-
-```python
-if a < 10:
-  print("a est tout petit")
-elif a < 50:
-  print("a est de taille moyenne")
-elif a < 90:
-  print("a est de grande taille")
-else:
-  print("a est de immense")
-```
-
-nous pouvons le ré-écire en Elixir comme suit:
-
-<!-- livebook:{"reevaluate_automatically":true} -->
-
-```elixir
-cond do
-  a < 10 ->
-    "a est tout petit"
-
-  a < 50 ->
-    "a est de taille moyenne"
-
-  a < 90 ->
-    "a est de grande taille"
-
-  # une condition finale à "true" (toujours vraie) tient lieu de "else"
-  true ->
-    "a est immense"
-end
-```
-
-on remarque donc la syntaxe du cond:
-
-* il s'agit d'une série de sous-blocs (eux même à l'intérieur du bloc `do`...`end`)
-* chaque expression commence par une condition (`a < 10`, `a < 50` etc.)
-* suivie d'une flèche `->`
-* suivie du code à évaluer dans le cas où la condition renvoie `true`
-
-_vous pouvez faire varier la valeur de référence afin d'observer les changements et de confirmer un comportement identique à celui de Python_
-
-<!-- livebook:{"break_markdown":true} -->
-
 ### Le `case`
 
-Une autre construction intéressante est le `case` qui est semblable au `switch` que l'on trouve dans certains langages de programmation (mais pas en Python). Cette construction permet de comparer une unique valeur à une série de valeur possible, tout en faisant du pattern-matching:
-
-```elixir
-case a do 
-  # uniquement si a == 0
-  0 ->
-    "a est nul"
-
-  # on récupère la valeur de a dans la variable local "val"
-  val ->
-    "a vaut #{val}"
-end
-```
-
-cette construction n'a pas l'air très puissante en soi, mais sa capacité à faire du pattern-matching la rend très puissante, par ex.:
-
-```elixir
-# faites varier tab !
-tab = [ 1, 2, 3 ]
-
-case tab do
-  # si tab est une liste de 3 éléments qui commence par 1 et se termine par 3
-  [ 1, x, 3 ] ->
-    "x vaut #{x}"
-
-  # si tab est une autre liste de 3 elements
-  [ a, b, c] -> 
-    a + b + c
-
-  # dans tous les autres cas (`_` est une variable "poubelle")
-  _ ->
-    "pas le format attendu !"
-end
-```
+Il est intéressant de noter que

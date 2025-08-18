@@ -21,6 +21,12 @@ Un premier notebook très simple destiné à des élèves, qui insiste sur les s
 
 [![Run in Livebook](https://livebook.dev/badge/v1/black.svg)](https://livebook.dev/run?url=https%3A%2F%2Fraw.githubusercontent.com%2Fushu%2Felixir-course%2Frefs%2Fheads%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fpremiers-pas.livemd)
 
+### Pour aller un peu plus loin (WIP)
+
+Découvrir le langage et ses différentes constructions.
+
+[![Run in Livebook](https://livebook.dev/badge/v1/black.svg)](https://livebook.dev/run?url=https%3A%2F%2Fraw.githubusercontent.com%2Fushu%2Felixir-course%2Frefs%2Fheads%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fplus-loin.livemd)
+
 # Contact et questions
 
 Pour toute question, vous pouvez me contacter par email sur ma boite de l'École [aurelien.noce@minesparis.psl.eu](mailto:aurelien.noce@minesparis.psl.eu).
