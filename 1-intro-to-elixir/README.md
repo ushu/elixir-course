@@ -17,15 +17,13 @@ Les différents notebooks utilisés en cours sont disponibles dans le sous-répe
 
 Un premier notebook très simple destiné à des élèves, qui insiste sur les similitudes entre Elixir et Python afin d'accompagner la transition.
 
-<!-- https://livebook.dev/badge/ -->
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fpremiers-pas.livemd)
 
-[![Run in Livebook](https://livebook.dev/badge/v1/black.svg)](https://livebook.dev/run?url=https%3A%2F%2Fraw.githubusercontent.com%2Fushu%2Felixir-course%2Frefs%2Fheads%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fpremiers-pas.livemd)
-
-### Pour aller un peu plus loin (WIP)
+### Pour aller un peu plus loin
 
 Découvrir le langage et ses différentes constructions.
 
-[![Run in Livebook](https://livebook.dev/badge/v1/black.svg)](https://livebook.dev/run?url=https%3A%2F%2Fraw.githubusercontent.com%2Fushu%2Felixir-course%2Frefs%2Fheads%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fplus-loin.livemd)
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fplus-loin.livemd)
 
 # Contact et questions
 
