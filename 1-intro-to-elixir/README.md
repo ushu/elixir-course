@@ -17,13 +17,20 @@ Les différents notebooks utilisés en cours sont disponibles dans le sous-répe
 
 Un premier notebook très simple destiné à des élèves, qui insiste sur les similitudes entre Elixir et Python afin d'accompagner la transition.
 
-[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fpremiers-pas.livemd)
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2F1-premiers-pas.livemd)
 
 ### Pour aller un peu plus loin
 
 Découvrir le langage et ses différentes constructions.
 
-[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2Fplus-loin.livemd)
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2F2-aller-plus-loin.livemd)
+
+### Approfondir les fonctions
+
+Elixir est un langage _fonctionnel_, c'est-à-dire que les fonctions y jouent un rôle _central_.
+Ce TP continue notre approfondissement de la syntaxe Elixir.
+
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2F3-les-fonctions.livemd)
 
 # Contact et questions
 

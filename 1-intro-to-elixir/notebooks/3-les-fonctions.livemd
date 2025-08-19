@@ -1,0 +1,395 @@
+<!-- livebook:{"file_entries":[{"name":"pattern-match-case.png","type":"attachment"},{"name":"terminal-rec-ok-ko.png","type":"attachment"}]} -->
+
+# C1N3 – Approfondissement sur les fonctions
+
+```elixir
+Mix.install([
+  {:pythonx, "~> 0.4.2"},
+  {:kino_pythonx, "~> 0.1.0"},
+  {:kino, "~> 0.16.1"}
+])
+```
+
+```pyproject.toml
+[project]
+name = "project"
+version = "0.0.0"
+requires-python = "==3.13.*"
+dependencies = []
+```
+
+## Les fonctions et le pattern-matching
+
+Jusqu'à présent, nous avons exploré les fonctions a travers des cas simples, en respectant toujours une même syntaxe:
+
+* la fonction est définie une fois par module
+* elle prend (en option) des arguments sous forme de variable
+* son bloc, défini entre les délimiteurs `do`...`end`, retourne sa dernière valeur
+
+<!-- livebook:{"break_markdown":true} -->
+
+Cette façon de faire fonctionne très bien, et permet de traiter des cas relativement complexes:
+
+```elixir
+defmodule Factorielle do
+
+  def fact(n) do
+    case n do
+      0 -> 
+        1
+        
+      n -> 
+        n * fact(n-1)
+    end  
+  end
+  
+end
+
+Factorielle.fact(4)
+```
+
+Le code ci-dessous, bien que parfaitement valide, n'est pas parfaitement idiomatique, ce cela pour plusieurs raison. Dans les _sections ci-dessous_, nous allons explorer de nouveaux éléments de syntaxe qui vont nous permettre de simplifier ce code, étape par étape.
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### Élément de syntaxe n°1 : le pattern matching dans la déclaration de la fonction
+
+Le code ci-dessus, via son `case`, réalise une opération de "pattern matching" : c'est-à-dire qu'il tente de faire correspondre la variable `n` avec une série de valeur successive (d'abord `0`, puis une valeur quelconque) afin de trouver une correspondance:
+
+![](files/pattern-match-case.png)
+
+Il est en fait possible de **réaliser cette opération** directement au niveau de la déclaration de la fonction, comme suit:
+
+```elixir
+defmodule FactorielleV2 do
+
+  def fact(0) do
+    1
+  end
+
+  def fact(n) do
+     n * fact(n-1)
+  end
+  
+end
+
+FactorielleV2.fact(4)
+```
+
+ici nous avons apporté deux modifications:
+
+1. nous avons écrit deux fois la même fonction
+2. dans la permière "version" de la fonction nous avons remplacé la variable `n` par la valeur constante `0`
+
+Suite à cette modification, Elixir va désormer évaluer `FactorielleV2.fact/1` comme suit:
+
+* il va "tester" les différentes variantes de la fonction, **dans l'ordre où elle sont définies** ("de haut en bas" dans le code) et exécuter _la première fonction pour laquelle les argument "matchent" la valeur passée en argument_
+* dans le cas d'une récursion – cf. ligne 8 ci-dessus - il re-testera toutes les fonctions dans l'ordre
+
+⚠️ **ATTENTION**: ce mode de fonctionnement, où Elixir teste nos fonctions jusqu'à en trouver une qui convienne implique plusieurs comportements:
+
+* si nous avions placé la variante `fact(n)` _au dessus_ de `fact(0)`, cette dernière _ne serait jamais appelée_: car `fact(n)` "branche toujours", `n` étant une variable libre qui accepte n'importe quelle valeur !
+* si _aucune des variantes_ d'une fonction ne "branche", Elixir génèrera une erreur et le programme s'arrête
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### Élément de syntaxe #2 : blocs d'une ligne
+
+Quand le bloc ne contient qu'une expression simple, il est possible de _l'abréger_:
+
+* on remplace `do`...`end` par un argument `do:`
+* et on place une virgule `,` avant ce `do:`
+
+démonstration:
+
+```elixir
+defmodule FactorielleV3 do
+
+  # le bloc do...end a disparu au profix de , do: ...
+  #         👇 attention à ne pas oublier cette virgule !
+  def fact(0), do: 1
+
+  #         👇 ni celle-là !
+  def fact(n), do: n * fact(n-1)
+  
+end
+
+FactorielleV3.fact(4)
+```
+
+## La récursivité terminale
+
+Elixir – comme OCaml... mais pas comme Python – est capable d'optimiser les fonctions récursives qui ont la propriété de _récursivité terminale_, c'est-à-dire:
+
+* ce sont des fonctions récursives
+* la dernière opérations qu'elles réalisent est _soit_:
+  * le renvoi d'une valeur constante
+  * un appel récursif à elles-même
+
+<!-- livebook:{"break_markdown":true} -->
+
+**Question**: nos questions ci-dessus (par ex. `FactorielleV3.fact/1`) ont-elles cette propriété de _récusrivité terminale_ ?
+
+_(réfléchissez un peu avant de scoller pour voir la réponse 😉)_
+
+<div style="height: 100vh">
+
+</div>
+
+<!-- livebook:{"break_markdown":true} -->
+
+Et bien la réponse est **NON** !
+
+en effet, la dernière opération de notre fonction `fact()` n'est pas de s'appeler elle-même, c'est la **multiplication**:
+
+![](files/terminal-rec-ok-ko.png)
+
+<!-- livebook:{"break_markdown":true} -->
+
+Nous allons ré-écrire notre calcul de la factorielle pour utiliser cette récursivité terminale.
+
+Mais avant ça présentons un dernier élément de syntaxe:
+
+<!-- livebook:{"break_markdown":true} -->
+
+#### Élément de syntaxe #3 : les fonctions _privées_
+
+En remplaçant `def` par `defp` lors de la déclaration de fonctions dans nos modules, il est possible de créer des fonctions privées:
+
+* elle sont appelables par les autres fonctions dans le même modules
+* mais ne sont pas accessible en dehors du module
+
+Démonstration:
+
+<!-- livebook:{"continue_on_error":true} -->
+
+```elixir
+defmodule PublicPrivateDemo do
+
+  def public_f do
+    IO.puts("Je suis une fonction publique")
+    private_f()
+  end
+
+  #  👇 c'est le "p" de "defp" qui marque la fonction comme privée
+  defp private_f do
+    IO.puts("Je suis une fonction privée")
+  end
+  
+end
+
+# ✅ cet appel va fonctionner, et la fonction privée sera invoquée
+PublicPrivateDemo.public_f()
+
+# 🛑 l'appel suivant ne fonctionnera pas
+PublicPrivateDemo.private_f()
+```
+
+### Version "terminal recusrive" de la factorielle
+
+Pour optimiser notre fonction factorielle, nous allons apporter deux modifications à notre code:
+
+* la fonction `fact/1` délèguera le calcul à une fonction privée `fact/2`
+* cette dernière sera rendue terminal-recusrive en _rajoutant un argument "accumulateur"_
+
+en pratique:
+
+```elixir
+defmodule FactorielleV4 do
+
+  # Notre seule fonction "publique" délègue à la fonction privée
+  def fact(n), do: fact(n, 1)
+
+  # À la fin de la récursion, on retourne l'accumulateur (second arg)
+  defp fact(0, acc), do: acc
+
+  #                            👇 le décrément du compteur
+  defp fact(n, acc), do: fact(n-1, n * acc)
+  #                      ↑           👆 le produit du calcul
+  #                      └ on appelle "fact" en dernier !
+  
+end
+
+FactorielleV4.fact(4)
+```
+
+## Exercice pratique
+
+Écrivez un module simple qui calcule le nième terme de la [suite de Fibonacci](https://fr.wikipedia.org/wiki/Suite_de_Fibonacci).
+
+Pour rappel:
+
+$$ F_{0}=0 $$
+
+$$ F_{1}=0 $$
+
+$$ F_{n+2}=F_{n+1}+F_n $$
+
+Vous pouvez faire plusieurs variantes:
+
+```elixir
+defmodule TP3Exercice1 do
+
+  @doc """
+  Calcule le n-ième terme de la suite de Fibonacci
+
+  ## Exemple
+
+    iex> TP3Exercice1.fib(2)
+    1
+
+    iex> TP3Exercice1.fib(3)
+    2
+
+    iex> TP3Exercice1.fib(10)
+    55
+  """
+  def fib(b) do
+    0 # TODO
+  end
+  
+end
+```
+
+## L'opérateur "pipe"
+
+Il est souvent nécessaire d'enchaîner les appels de fonctions les une après les autres, afin d'apporter des modifications successives à une donnée de départ.
+
+Prenons un exemple pratique : imaginons que nous travaillions sur un système de blog. L'utilisateur peut créer des articles, et définir le titre du nouvel article. Puis arrive le moment de la publication et nous souhaiterions générer une adresse "explicite" pour ce post, par ex:
+
+* si l'utilisateur a écrit un post nommé "Mon premier blog-post"
+* nous aimerions que l'adresse internet de l'article soit "mon-premier-blog-post"
+
+Pour se faire, nous imaginons un algorithme:
+
+* nous partons du titre et le mettons en minuscue
+* puis nous séparons les mots en "coupant" au niveau des espaces
+* enfin nous "regroupons" les morceaux en les relitant avec des tirets `-`
+
+En Python:
+
+```python
+titre_article = "Mon premier blog post"
+
+    # la méthode .join() de ste
+"-".join(
+  titre_article
+    .lower()    # transforme la str en minuscule
+    .split(" ") # coupe la str en une list de str
+)
+```
+
+Essayons maintenant de faire la même chose en Elixir:
+
+```elixir
+titre_article = "Mon premier blog post"
+
+Enum.join(
+  String.split(
+    String.downcase(
+      titre_article    
+    ),
+    " "
+  ),
+  "-"
+)
+```
+
+ce n'est pas extrêmement lisible...
+
+Une alternative possible serait de passer par une variable que l'on ré-assignerait au fur et à mesure des transformations:
+
+```elixir
+titre_article = "Mon premier blog post"
+
+slug = String.downcase(titre_article)
+slug = String.split(slug, " ")
+slug = Enum.join(slug, "-")
+slug
+```
+
+Beaucoup mieux !
+
+Nous voyons là les forces et les faiblesse de l'approche "objet" de Python:
+
+* il est facile "d'enchaîner" les appels des _méthodes_ de `str` telles que `.lower()` et `.split()`
+* la "chaîne de caractère courante" est passée implicitement : le langage "sait" que nous travaillons sur `titre_article`
+* par contre, ça ne fonctionne pas lorsque la fonction à appeler ne fait pas partie des méthodes de `str` : dans le code Python plus haut, nous avons finalement besoin de faire un `.join()` mais cette méthode n'est pas disponible, et on ne peut pas "enchaîner l'appel avec `.`"
+
+Elixir propose **une syntaxe dite de "pipe" `|>`** qui permet de faire sensiblement la même chose:
+
+* le résultat de la fonction précédente est implicitement passé comme premier argument de la fonction suivante
+* on peut mettre n'importe quelle fonctions "à la suite", contrairement aux objets ou seules mes _méthodes de la classe_ peuvent être "chaînées"
+
+Démonstration:
+
+```elixir
+titre_article = "Mon premier blog post"
+
+titre_article
+|> String.downcase()  # titre_article est passé en argument implicitement
+|> String.split(" ")  # idem pour le résultat de downcase
+|> Enum.join("-")     # et de join
+```
+
+**BONUS**: debug des enchaînements d'opérations
+
+Elixir dispose d'une macro `dbg` qui permet d'analyser ce qui se passe à l'intérieur d'une suite d'opérations. Cette fonctionnalité est particulièrement bien intégrée à LiveBook.
+
+Pour l'utiliser il suffit de _rajouter une étape de pipe vers `dbg()`_:
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+titre_article
+|> String.downcase()
+|> String.split(" ")
+|> Enum.join("-")
+|> dbg()
+```
+
+### Exercice d'application
+
+Commencez par **parcourir rapidement la documentation du [module `Enum` d'Elixir](https://hexdocs.pm/elixir/1.18.4/Enum.html)** qui permet de travailler sur les collections (et les listes en particulier).
+
+## Les fonctions anonymes
+
+Elixir dispose d'un équivalent aux `lambda`s de Python: c'est-à-dire une façon de définir une fonction qui n'a pas de nom (et qui _n'appartient pas à un module_ !).
+
+Cette syntaxe se présente comme suit:
+
+* le mot-clé `fn`
+* suivi (éventuellement), d'une liste d'arguments
+* suivi d'une "flèche" `->`
+* et enfin le mot-clé `end` à la fin de la déclaration
+
+```elixir
+# Exemple de fonction, mise dans la variable ma_f
+elixir_anon_f = fn x -> 
+  x+1
+end
+```
+
+est équivalent à la déclaration Python:
+
+```python
+python_anon_f = lambda x: x+1
+```
+
+on peut vérifier que cette variable contient bien une fonction:
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+is_function(elixir_anon_f)
+```
+
+et on peut l'**invoquer**.
+
+⚠️ **ATTENTION** quand on évoque une fonction anonyme, il faut rajouter un `.` avant les parenthèses !
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+elixir_anon_f.(10)
+```

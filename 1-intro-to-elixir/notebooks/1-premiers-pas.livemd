@@ -1,6 +1,6 @@
 <!-- livebook:{"file_entries":[{"name":"cell-results.png","type":"attachment"},{"name":"help-jump.png","type":"attachment"},{"name":"hover-doc.png","type":"attachment"},{"name":"lb-completion.png","type":"attachment"},{"name":"module-outline.png","type":"attachment"},{"name":"nargs-in-signature.png","type":"attachment"},{"name":"run-icon.png","type":"attachment"},{"name":"same-name-diff-arity.png","type":"attachment"}]} -->
 
-# Permier pas
+# C1N1 – Premiers pas avec Elixir
 
 ```elixir
 Mix.install([
@@ -214,6 +214,8 @@ Elixir détecte bien les deux variantes de cette fonction, comme le prouve LiveB
 
 et on peut les appeler séparément, ce qui aurait été impossible en Python:
 
+<!-- livebook:{"continue_on_error":true} -->
+
 ```python
 def add_et_un(x, y):
   return x + y + 1
@@ -369,7 +371,7 @@ defmodule TimeTools do
     iex> TimeTools.seconds_to_hms(86400)
     "24:00:00"
   """
-  def seconds_to_hms(total_seconds) when is_integer(total_seconds) and total_seconds >= 0 do
+  def seconds_to_hms(total_seconds) do
     h = "00"
     m = "00"
     s = "00"
