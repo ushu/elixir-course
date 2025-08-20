@@ -1,4 +1,4 @@
-# C1TP – Parcours d’un labyrinthe
+# C1TP – Parcours d’un graphe et plus court chemin
 
 ```elixir
 Mix.install([
@@ -12,10 +12,10 @@ ExUnit.start(autorun: false)
 
 ## Objectif(s)
 
-* Manipuler les **listes** et **maps**.
-* Implémenter un **algorithme simple** (parcours en largeur ou profondeur).
-* Découvrir une représentation **graphique / automate** d’un problème.
-* Écrire et composer des **fonctions**.
+- Manipuler les **listes** et **maps**.
+- Implémenter un **algorithme simple** (parcours en largeur ou profondeur).
+- Découvrir une représentation **graphique / automate** d’un problème.
+- Écrire et composer des **fonctions**.
 
 ## 1. Représenter un graphe
 
@@ -23,8 +23,8 @@ ExUnit.start(autorun: false)
 
 Un **graphe** $G = (V, E)$ est un couple constitué :
 
-* d’un ensemble $V$ de **sommets** (ou nœuds),
-* d’un ensemble $E \subseteq \{ \{u, v\} \mid u, v \in V, u \ne v \}$ de **paires non ordonnées** appelées **arêtes** (ou liens).
+- d’un ensemble $V$ de **sommets** (ou nœuds),
+- d’un ensemble $E \subseteq \{ \{u, v\} \mid u, v \in V, u \ne v \}$ de **paires non ordonnées** appelées **arêtes** (ou liens).
 
 On parle alors de **graphe non orienté** et **simple** (sans boucles ni arêtes multiples).
 
@@ -122,7 +122,7 @@ defmodule GraphInfo do
   def neighbors(graph, node) do
     []
   end
-  
+
 end
 ```
 
@@ -135,7 +135,7 @@ defmodule GraphInfoCorrige do
     iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
     iex> GraphInfoCorrige.neighbors(graph, "A")
     ["B", "D"]
-    
+
     iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
     iex> GraphInfo.neighbors(graph, "C")
     []
@@ -143,7 +143,7 @@ defmodule GraphInfoCorrige do
   def neighbors(graph, node) do
     Map.get(graph, node, [])
   end
-  
+
 end
 ```
 
@@ -151,22 +151,22 @@ end
 
 Nous voulons désormais parcourir notre graphe "en largeur, c'est à dire:
 
-* on donne à notre fonction un un graph et un noeud de départ
-* il retourne une liste de tous les noeuds, parcourus à partir du noeud courant (voir exemple dans le DocTest)
+- on donne à notre fonction un un graph et un noeud de départ
+- il retourne une liste de tous les noeuds, parcourus à partir du noeud courant (voir exemple dans le DocTest)
 
 N'hésitez pas à demander de l'aide à votre encadrant et/ou à vous renseigner sur [l'algorithme sur internet](https://fr.wikipedia.org/wiki/Algorithme_de_parcours_en_largeur).
 
 Concrètement:
 
-* vous devrez maintenir une file des noeuds "à parcourir": à chaque noeud visité on ajoute ses vions dans les noeuds "à visiter plus tard"
-* une liste des noeuds déjà visités
-* et par rapport à l'algorithme "usuel" vous devrez utiliser la récursion à la place de l'itération
+- vous devrez maintenir une file des noeuds "à parcourir": à chaque noeud visité on ajoute ses vions dans les noeuds "à visiter plus tard"
+- une liste des noeuds déjà visités
+- et par rapport à l'algorithme "usuel" vous devrez utiliser la récursion à la place de l'itération
 
 Pour votre code, vous pourriez utiliser:
 
-* l'opérateur `in` qui permet de tester si un élément est dans une liste: `1 in [1, 2, 3, 4]`
-* la concaténation de deux listes avec `++`: `[1, 2] ++ [3, 4] == [1, 2, 3, 4]`
-* la fonction `Enum.reverse` qui "retourne" une liste
+- l'opérateur `in` qui permet de tester si un élément est dans une liste: `1 in [1, 2, 3, 4]`
+- la concaténation de deux listes avec `++`: `[1, 2] ++ [3, 4] == [1, 2, 3, 4]`
+- la fonction `Enum.reverse` qui "retourne" une liste
 
 ```elixir
 defmodule GraphBFS do
@@ -179,7 +179,7 @@ defmodule GraphBFS do
   def bfs(graph, start) do
     []
   end
-  
+
 end
 ```
 
@@ -198,20 +198,20 @@ defmodule GraphBFSCorrige do
   end
 
   defp bfs(_graph, [], visited), do: Enum.reverse(visited)
-  
+
   defp bfs(graph, [current | rest], visited) do
     if current in visited do
       bfs(graph, rest, visited) # déjà visité
     else
       new_nodes = GraphInfoCorrige.neighbors(graph, current)
       bfs(
-        graph, 
+        graph,
         rest ++ new_nodes, # on "enqueue" les noeuds à visiter
         [current | visited] # et on rajoute le noeud visite dans la liste
       )
     end
   end
-  
+
 end
 ```
 
@@ -241,8 +241,8 @@ queue = :queue.from_list([1, 2, 3, 4, 5, 6])
 
 Nous remarquons alors plusieurs choses:
 
-* la "queue" est stockée dans une structure constituée d'un tuple qui lui-même contient deux listes
-* le premier et le dernier élément de la notre queue sont les premiers éléments des deux listes respectives: f_aites varier les éléments de la queue et vous verrez !
+- la "queue" est stockée dans une structure constituée d'un tuple qui lui-même contient deux listes
+- le premier et le dernier élément de la notre queue sont les premiers éléments des deux listes respectives: f_aites varier les éléments de la queue et vous verrez !
 
 💡 c'est le secret de cette structure, qui maintient une structure permettant d'ajouter et/ou enlever un élément au début ou à la fin de la structure très rapiement.
 
@@ -250,15 +250,15 @@ Nous remarquons alors plusieurs choses:
 
 La librairie fournit un ensemble de méthodes très simples pour manipuler la queue:
 
-* calculer la taille:
+- calculer la taille:
 
 ```elixir
 :queue.len(queue)
 ```
 
-* ajouter un élément:
-  * au début avec `:queue.in/1` pour insérer **à la fin** de la liste
-  * à la fin avec `:queue.in_r/2` pour insérer **au début** de la liste
+- ajouter un élément:
+  - au début avec `:queue.in/1` pour insérer **à la fin** de la liste
+  - à la fin avec `:queue.in_r/2` pour insérer **au début** de la liste
 
 ```elixir
 queue = :queue.in(7, queue) # ajoute à la fin (première liste du tuple)
@@ -268,19 +268,19 @@ queue = :queue.in(7, queue) # ajoute à la fin (première liste du tuple)
  queue = :queue.in_r(0, queue) # ajoute au début (seconde liste du tuple)
 ```
 
-* pour enlever un élément, nous pouvons utiliser:
+- pour enlever un élément, nous pouvons utiliser:
 
-  * `:queue.get/1` pour lire **au début** de la liste
-  * `:queue.get_r/1` pour lire **à la fin** de la liste
-  * `:queue.out/1` pour lire **au début** de la liste _et retourner la liste sans cet élément
-  * `:queue.out_r/1` pour lire **à la fi** de la liste _et retourner la liste sans cet élément
+  - `:queue.get/1` pour lire **au début** de la liste
+  - `:queue.get_r/1` pour lire **à la fin** de la liste
+  - `:queue.out/1` pour lire **au début** de la liste \_et retourner la liste sans cet élément
+  - `:queue.out_r/1` pour lire **à la fi** de la liste \_et retourner la liste sans cet élément
 
   ⚠️ le `_r` ne signifie pas "devant" our "derrière" mais signifie que c'est _l'inverse_ du `in_r`:
 
-  * avec `in` et `out` (ou `get`) on a une FIFO où l'on insère à la fin et on lit au début
-  * avec `in_r` et `out_r` (ou `get_r`) on a une FIFO où l'on insère au début et on lit à la fin
-  * avec `in` et `out_r` (ou `get_r`) on a une LIFO où l'on insère à la fin et on lit à la fin
-  * avec `in_r` et `out` (ou `get`) on a une LIFO où l'on insère au début et on lit au début
+  - avec `in` et `out` (ou `get`) on a une FIFO où l'on insère à la fin et on lit au début
+  - avec `in_r` et `out_r` (ou `get_r`) on a une FIFO où l'on insère au début et on lit à la fin
+  - avec `in` et `out_r` (ou `get_r`) on a une LIFO où l'on insère à la fin et on lit à la fin
+  - avec `in_r` et `out` (ou `get`) on a une LIFO où l'on insère au début et on lit au début
 
 ```elixir
 # lecture au début
@@ -299,10 +299,10 @@ queue_vide = :queue.new()
 :queue.get(queue_vide)
 ```
 
-* une meilleur option sera d'utiliser `out` et `out_r`:
-  * si la queue n'est pas vide, la valeur de retour sera un tuple:
+- une meilleur option sera d'utiliser `out` et `out_r`:
+  - si la queue n'est pas vide, la valeur de retour sera un tuple:
     `{ {:value, valeur }, queue_sans_cette_valeur }`
-  * si la queue est vide, la valeur de retour sera: `{ :empty, queue }`
+  - si la queue est vide, la valeur de retour sera: `{ :empty, queue }`
 
 ```elixir
 # on récupère la valeur au début de la liste et on l'enlève de la liste
@@ -335,7 +335,7 @@ defmodule GraphBFSQueue do
   def bfs(graph, start) do
     []
   end
-  
+
 end
 ```
 
@@ -354,7 +354,7 @@ defmodule GraphBFSQueueCorrige do
   end
 
   defp bfs(_graph, {[], []}, visited), do: Enum.reverse(visited)
-  
+
   defp bfs(graph, queue, visited) do
     {{:value, current}, rest} = :queue.out(queue)
     if current in visited do
@@ -362,13 +362,13 @@ defmodule GraphBFSQueueCorrige do
     else
       new_nodes = GraphInfoCorrige.neighbors(graph, current)
       bfs(
-        graph, 
+        graph,
         :queue.join(rest, :queue.from_list(new_nodes)),
         [current | visited] # et on rajoute le noeud visite dans la liste
       )
     end
   end
-  
+
 end
 ```
 
@@ -378,9 +378,9 @@ Votre objectif ici est de _reprendre votre code de parcours en largeur_ afin de 
 
 Même si ça peut paraître compliqué, nous avons toutes les briques nécessaires pour réaliser ce calcul.
 
-* jusqu'à maintenant, nous construisions une liste de "noeuds visités" que nous retournions à la fin de l'algorithme
-* vous allez faire évoluer cette liste vers une liste de tuple `{ "Noeud", [ "Chemin", "vers", "ce", "noeud" ] }`
-* dès que atteindra le noeud objectif, on retournera le chemin vers ce noeud
+- jusqu'à maintenant, nous construisions une liste de "noeuds visités" que nous retournions à la fin de l'algorithme
+- vous allez faire évoluer cette liste vers une liste de tuple `{ "Noeud", [ "Chemin", "vers", "ce", "noeud" ] }`
+- dès que atteindra le noeud objectif, on retournera le chemin vers ce noeud
 
 _encore une fois, n'hésitez pas à solliciter l'aide de votre professeur !_
 
@@ -397,7 +397,7 @@ defmodule GraphShortestPath do
   def shortest_path(graph, start, goal) do
     []
   end
-  
+
 end
 ```
 
@@ -408,7 +408,7 @@ defmodule GraphShortestCorrige do
   @doc """
     iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
     iex> GraphShortestCorrige.shortest_path(graph, "A", "C")
-    ["A","B","C"]  
+    ["A","B","C"]
   """
   def shortest_path(graph, start, goal) do
     shortest_path(graph, [{start, [start]}], goal, [])
