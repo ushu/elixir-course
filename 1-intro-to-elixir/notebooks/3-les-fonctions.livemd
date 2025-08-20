@@ -22,9 +22,9 @@ dependencies = []
 
 Jusqu'à présent, nous avons exploré les fonctions a travers des cas simples, en respectant toujours une même syntaxe:
 
-- la fonction est définie une fois par module
-- elle prend (en option) des arguments sous forme de variable
-- son bloc, défini entre les délimiteurs `do`...`end`, retourne sa dernière valeur
+* la fonction est définie une fois par module
+* elle prend (en option) des arguments sous forme de variable
+* son bloc, défini entre les délimiteurs `do`...`end`, retourne sa dernière valeur
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -83,13 +83,13 @@ ici nous avons apporté deux modifications:
 
 Suite à cette modification, Elixir va désormer évaluer `FactorielleV2.fact/1` comme suit:
 
-- il va "tester" les différentes variantes de la fonction, **dans l'ordre où elle sont définies** ("de haut en bas" dans le code) et exécuter _la première fonction pour laquelle les argument "matchent" la valeur passée en argument_
-- dans le cas d'une récursion – cf. ligne 8 ci-dessus - il re-testera toutes les fonctions dans l'ordre
+* il va "tester" les différentes variantes de la fonction, **dans l'ordre où elle sont définies** ("de haut en bas" dans le code) et exécuter _la première fonction pour laquelle les argument "matchent" la valeur passée en argument_
+* dans le cas d'une récursion – cf. ligne 8 ci-dessus - il re-testera toutes les fonctions dans l'ordre
 
 ⚠️ **ATTENTION**: ce mode de fonctionnement, où Elixir teste nos fonctions jusqu'à en trouver une qui convienne implique plusieurs comportements:
 
-- si nous avions placé la variante `fact(n)` _au dessus_ de `fact(0)`, cette dernière _ne serait jamais appelée_: car `fact(n)` "branche toujours", `n` étant une variable libre qui accepte n'importe quelle valeur !
-- si _aucune des variantes_ d'une fonction ne "branche", Elixir génèrera une erreur et le programme s'arrête
+* si nous avions placé la variante `fact(n)` _au dessus_ de `fact(0)`, cette dernière _ne serait jamais appelée_: car `fact(n)` "branche toujours", `n` étant une variable libre qui accepte n'importe quelle valeur !
+* si _aucune des variantes_ d'une fonction ne "branche", Elixir génèrera une erreur et le programme s'arrête
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -97,8 +97,8 @@ Suite à cette modification, Elixir va désormer évaluer `FactorielleV2.fact/1`
 
 Quand le bloc ne contient qu'une expression simple, il est possible de _l'abréger_:
 
-- on remplace `do`...`end` par un argument `do:`
-- et on place une virgule `,` avant ce `do:`
+* on remplace `do`...`end` par un argument `do:`
+* et on place une virgule `,` avant ce `do:`
 
 démonstration:
 
@@ -121,10 +121,10 @@ FactorielleV3.fact(4)
 
 Elixir – comme OCaml... mais pas comme Python – est capable d'optimiser les fonctions récursives qui ont la propriété de _récursivité terminale_, c'est-à-dire:
 
-- ce sont des fonctions récursives
-- la dernière opérations qu'elles réalisent est _soit_:
-  - le renvoi d'une valeur constante
-  - un appel récursif à elles-même
+* ce sont des fonctions récursives
+* la dernière opérations qu'elles réalisent est _soit_:
+  * le renvoi d'une valeur constante
+  * un appel récursif à elles-même
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -156,8 +156,8 @@ Mais avant ça présentons un dernier élément de syntaxe:
 
 En remplaçant `def` par `defp` lors de la déclaration de fonctions dans nos modules, il est possible de créer des fonctions privées:
 
-- elle sont appelables par les autres fonctions dans le même modules
-- mais ne sont pas accessible en dehors du module
+* elle sont appelables par les autres fonctions dans le même modules
+* mais ne sont pas accessible en dehors du module
 
 Démonstration:
 
@@ -189,8 +189,8 @@ PublicPrivateDemo.private_f()
 
 Pour optimiser notre fonction factorielle, nous allons apporter deux modifications à notre code:
 
-- la fonction `fact/1` délèguera le calcul à une fonction privée `fact/2`
-- cette dernière sera rendue terminal-recusrive en _rajoutant un argument "accumulateur"_
+* la fonction `fact/1` délèguera le calcul à une fonction privée `fact/2`
+* cette dernière sera rendue terminal-recusrive en _rajoutant un argument "accumulateur"_
 
 en pratique:
 
@@ -217,13 +217,15 @@ FactorielleV4.fact(4)
 
 Écrivez un module simple qui calcule le nième terme de la [suite de Fibonacci](https://fr.wikipedia.org/wiki/Suite_de_Fibonacci).
 
-Pour rappel:
+Pour rappel, la suite est définit comme suit:
 
-$$ F\_{0}=0 $$
-
-$$ F\_{1}=0 $$
-
-$$ F*{n+2}=F*{n+1}+F_n $$
+$$ 
+\begin{aligned}
+F_{0} & =0 \\
+F_{1} & =1 \\
+F_{n+2} & = F_{n+1}+F_n
+\end{aligned}
+$$
 
 Vous pouvez faire plusieurs variantes:
 
@@ -257,14 +259,14 @@ Il est souvent nécessaire d'enchaîner les appels de fonctions les une après l
 
 Prenons un exemple pratique : imaginons que nous travaillions sur un système de blog. L'utilisateur peut créer des articles, et définir le titre du nouvel article. Puis arrive le moment de la publication et nous souhaiterions générer une adresse "explicite" pour ce post, par ex:
 
-- si l'utilisateur a écrit un post nommé "Mon premier blog-post"
-- nous aimerions que l'adresse internet de l'article soit "mon-premier-blog-post"
+* si l'utilisateur a écrit un post nommé "Mon premier blog-post"
+* nous aimerions que l'adresse internet de l'article soit "mon-premier-blog-post"
 
 Pour se faire, nous imaginons un algorithme:
 
-- nous partons du titre et le mettons en minuscue
-- puis nous séparons les mots en "coupant" au niveau des espaces
-- enfin nous "regroupons" les morceaux en les relitant avec des tirets `-`
+* nous partons du titre et le mettons en minuscue
+* puis nous séparons les mots en "coupant" au niveau des espaces
+* enfin nous "regroupons" les morceaux en les relitant avec des tirets `-`
 
 En Python:
 
@@ -312,14 +314,14 @@ Beaucoup mieux !
 
 Nous voyons là les forces et les faiblesse de l'approche "objet" de Python:
 
-- il est facile "d'enchaîner" les appels des _méthodes_ de `str` telles que `.lower()` et `.split()`
-- la "chaîne de caractère courante" est passée implicitement : le langage "sait" que nous travaillons sur `titre_article`
-- par contre, ça ne fonctionne pas lorsque la fonction à appeler ne fait pas partie des méthodes de `str` : dans le code Python plus haut, nous avons finalement besoin de faire un `.join()` mais cette méthode n'est pas disponible, et on ne peut pas "enchaîner l'appel avec `.`"
+* il est facile "d'enchaîner" les appels des _méthodes_ de `str` telles que `.lower()` et `.split()`
+* la "chaîne de caractère courante" est passée implicitement : le langage "sait" que nous travaillons sur `titre_article`
+* par contre, ça ne fonctionne pas lorsque la fonction à appeler ne fait pas partie des méthodes de `str` : dans le code Python plus haut, nous avons finalement besoin de faire un `.join()` mais cette méthode n'est pas disponible, et on ne peut pas "enchaîner l'appel avec `.`"
 
 Elixir propose **une syntaxe dite de "pipe" `|>`** qui permet de faire sensiblement la même chose:
 
-- le résultat de la fonction précédente est implicitement passé comme premier argument de la fonction suivante
-- on peut mettre n'importe quelle fonctions "à la suite", contrairement aux objets ou seules mes _méthodes de la classe_ peuvent être "chaînées"
+* le résultat de la fonction précédente est implicitement passé comme premier argument de la fonction suivante
+* on peut mettre n'importe quelle fonctions "à la suite", contrairement aux objets ou seules mes _méthodes de la classe_ peuvent être "chaînées"
 
 Démonstration:
 
@@ -354,10 +356,10 @@ Elixir dispose d'un équivalent aux `lambda`s de Python: c'est-à-dire une faço
 
 Cette syntaxe se présente comme suit:
 
-- le mot-clé `fn`
-- suivi (éventuellement), d'une liste d'arguments
-- suivi d'une "flèche" `->`
-- et enfin le mot-clé `end` à la fin de la déclaration
+* le mot-clé `fn`
+* suivi (éventuellement), d'une liste d'arguments
+* suivi d'une "flèche" `->`
+* et enfin le mot-clé `end` à la fin de la déclaration
 
 ```elixir
 # Exemple de fonction, mise dans la variable ma_f
@@ -420,8 +422,8 @@ l
 
 Le but de cet exercice est avant tout de vous familiariser avec [la documentation d'`Enum`](https://hexdocs.pm/elixir/Enum.html) en recherchant un moyen de réaliser un petit exemple simple:
 
-- on vous donne les liste des couleurs et des valeurs des cartes à jouer classiques (en anglais, car en français "Roi" et "Reine" commencent par la même lettre...)
-- vous devez générer la liste de toutes cartes possbiles en combinant ces deux listes
+* on vous donne les liste des couleurs et des valeurs des cartes à jouer classiques (en anglais, car en français "Roi" et "Reine" commencent par la même lettre...)
+* vous devez générer la liste de toutes cartes possbiles en combinant ces deux listes
 
 par ex.: ♠️A pour l'as de pique, ♥️9 pour le neuf de coeur etc.
 
@@ -439,8 +441,8 @@ Il y a des raisons à cela, et en particulier la mémoire "immutable" ne permet 
 
 Il y a alors deux façons d'itérer une série de valeurs:
 
-- utiliser la _récursion_: ça ne vous paraît sans doute pas (encore) naturel mais c'est très commun
-- utiliser le module `Enum` et en particulier [la fonction `Enum.each/2`](https://hexdocs.pm/elixir/Enum.html#each/2)
+* utiliser la _récursion_: ça ne vous paraît sans doute pas (encore) naturel mais c'est très commun
+* utiliser le module `Enum` et en particulier [la fonction `Enum.each/2`](https://hexdocs.pm/elixir/Enum.html#each/2)
 
 Par exemple:
 
@@ -472,9 +474,9 @@ end
 
 d'un point de vue syntaxique, la compréhension de liste Elixir se construit comme suit:
 
-- le mot-clé `for`
-- suivi d'une assignation de variable, sous la forme `nom_de_variable <- collection`
-- et d'un bloc `do`...`end`
+* le mot-clé `for`
+* suivi d'une assignation de variable, sous la forme `nom_de_variable <- collection`
+* et d'un bloc `do`...`end`
 
 Cette _expression_ retourne finalement une _nouvelle liste_ où chaque élément est le résultat du bloc qui est exécuté.
 
@@ -539,5 +541,13 @@ length(less_cards)
 
 Nous n'avons fait qu'éffleurer la surface de ce qui est possible avec les compréhensions Elixir. Pour aller plus loin, vous pouvez consulter:
 
-- la [documentation d'Elixir sur le `for`](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#for/1)
-- l'[article de Mitchell Hanberg](https://www.mitchellhanberg.com/the-comprehensive-guide-to-elixirs-for-comprehension/) sur le sujet
+* la [documentation d'Elixir sur le `for`](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#for/1)
+* l'[article de Mitchell Hanberg](https://www.mitchellhanberg.com/the-comprehensive-guide-to-elixirs-for-comprehension/) sur le sujet
+
+<!-- livebook:{"break_markdown":true} -->
+
+---
+
+Nous avons terminé nous tour des principaux éléments de syntaxe d'Elixir.
+
+Vous êtes désormais fin prêts à aborder le [TP final](tp-graphes.livemd).

@@ -380,3 +380,9 @@ defmodule TimeTools do
   end
 end
 ```
+
+---
+
+Vous êtes arrivés au bout de ce notebook, **félicitations** 🎉
+
+Rendez-vous [au notebook suivant](2-aller-plus-loin.livemd) pour continuer votre apprentissage d'Elixir !

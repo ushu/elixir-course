@@ -1,4 +1,4 @@
-# C1APP – TP Parcours d’un labyrinthe
+# C1TP – Parcours d’un labyrinthe
 
 ```elixir
 Mix.install([
@@ -103,6 +103,7 @@ graph = %{
 ### Écrire une fonction `GraphInfo.neighbors/2` qui renvoie la liste des voisins d’un nœud.
 
 ⚠️ Dans le cas où aucune arrête n'est spécifiée pour un noeud, on renverra une liste vide `[]`
+
 💡 Pensez à consulter la [documentation du module `Map`](https://hexdocs.pm/elixir/Map.html) au besoin
 
 ```elixir
