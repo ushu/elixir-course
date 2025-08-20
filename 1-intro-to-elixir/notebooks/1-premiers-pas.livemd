@@ -21,8 +21,8 @@ dependencies = []
 
 Reprenons l'exemple présenté dans les transparents du cours:
 
-- vous pouvez **exécuter** ce code en passant par votre souris au-dessus de la cellule et cliquer l'icône ▶️ située en haut à gauche ![](files/run-icon.png)
-- vous pouvez également passer votre pointeur de souris sur le module `IO` ou la fonction `puts` afin d'afficher la documentation associée ![](files/hover-doc.png)
+* vous pouvez **exécuter** ce code en passant par votre souris au-dessus de la cellule et cliquer l'icône ▶️ située en haut à gauche ![](files/run-icon.png)
+* vous pouvez également passer votre pointeur de souris sur le module `IO` ou la fonction `puts` afin d'afficher la documentation associée ![](files/hover-doc.png)
 
 ```elixir
 IO.puts("Hello, world !")
@@ -42,9 +42,9 @@ Afin de faciliter la prise en main du langage, nous allons commencer par explore
 
 L'objectif de cette section du cours est donc:
 
-- de continuer à vous familiariser avec LiveBook
-- de profiter des similitudes du langage Elixir avec le langage Python que vous connaissez afin de commencer rapidement à l'utiliser
-- d'apprendre à parcourir la documentation d'Elixir
+* de continuer à vous familiariser avec LiveBook
+* de profiter des similitudes du langage Elixir avec le langage Python que vous connaissez afin de commencer rapidement à l'utiliser
+* d'apprendre à parcourir la documentation d'Elixir
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -84,9 +84,9 @@ rem(10, 3)
 
 Commencez par lire la documentation Elixir disponible en ligne:
 
-- la section "Basic arithmetic" disponible [ici](https://hexdocs.pm/elixir/basic-types.html#basic-arithmetic)
-- la documentation de l'opérateur `**/2` disponible [ici](https://hexdocs.pm/elixir/1.15.5/Kernel.html#**/2)
-- la documentation de l'opérateur `abs/1` disponible [ici](https://hexdocs.pm/elixir/1.15.5/Kernel.html#abs/1)
+* la section "Basic arithmetic" disponible [ici](https://hexdocs.pm/elixir/basic-types.html#basic-arithmetic)
+* la documentation de l'opérateur `**/2` disponible [ici](https://hexdocs.pm/elixir/Kernel.html#**/2)
+* la documentation de l'opérateur `abs/1` disponible [ici](https://hexdocs.pm/elixir/Kernel.html#abs/1)
 
 En remplaçant les appels `print()` de Python par des appels à `IO.puts`, traduisez le code suivant en Elixir:
 
@@ -117,8 +117,8 @@ Ceci étant dit, en tant que langage fonctionnel, les fonctions ont une place ab
 
 Comme évoqué lors de la présentation des transparents de cours, les fonctions Elixir sont regroupées dans des **modules**. Ainsi pour pouvoir déclarer notre fonction, nous devront:
 
-- créer un **module**: avec `defmodule`
-- créer notre **fonction** _dans_ ce module: avec `def`
+* créer un **module**: avec `defmodule`
+* créer notre **fonction** _dans_ ce module: avec `def`
 
 en pratique:
 
@@ -134,9 +134,9 @@ end
 
 on remarque plusieurs choses:
 
-- le "contenu" du module et de la fonction est délimité par un "bloc" qui commence par `do` et se termine par `end`
-- le nom du module est une suite de mots commençant par une majuscule et collés entre eux (on parle de "Pascal Calse")
-- le nom de la fonction est une suite de mots en minuscule relités par des `_` (on parle de "Snake Case")
+* le "contenu" du module et de la fonction est délimité par un "bloc" qui commence par `do` et se termine par `end`
+* le nom du module est une suite de mots commençant par une majuscule et collés entre eux (on parle de "Pascal Calse")
+* le nom de la fonction est une suite de mots en minuscule relités par des `_` (on parle de "Snake Case")
 
 Ces conventions (en particulier sur le nom de module) sont à respecter lorsque l'on programme en Elixir.
 
@@ -152,8 +152,8 @@ De plus, le module ainsi défini apparaît automatiquement dans la table des mat
 
 Enfin, il est intéressant de noter que la documentation automatique qui apparaît lorsque le curseur de la souris survole un nom de fonction ou de module permet également de sauter vers la définition:
 
-- s'il s'agit d'une fonction définit dans le livebook courant, il est possible de sauter vers la cellul qui l'a définie
-- s'il s'agit d'une fonction de la librairie standard, il est possible de sauter directement vers la documentation de ladite fonction
+* s'il s'agit d'une fonction définit dans le livebook courant, il est possible de sauter vers la cellul qui l'a définie
+* s'il s'agit d'une fonction de la librairie standard, il est possible de sauter directement vers la documentation de ladite fonction
 
 ![](files/help-jump.png)
 
@@ -185,8 +185,8 @@ MonDeuxiemeModule.ajoute_et_un(1, 2)
 
 Cet exemple appelle plusieurs remarques:
 
-- tout d'abord, _contrairement_ à Python il n'y a pas d'appel à `return` pour renvoyer un résultat: la dernière expression d'un bloc (entre `do` et `end`) et renvoyée et constitue le résultat de la fonction
-- les plus observateurs d'entre vous auront peut-être remarqués que lorsque LiveBook complète le nom de la fonction, il rajoute `/2` à la fin du nom: ![](files/nargs-in-signature.png)
+* tout d'abord, _contrairement_ à Python il n'y a pas d'appel à `return` pour renvoyer un résultat: la dernière expression d'un bloc (entre `do` et `end`) et renvoyée et constitue le résultat de la fonction
+* les plus observateurs d'entre vous auront peut-être remarqués que lorsque LiveBook complète le nom de la fonction, il rajoute `/2` à la fin du nom: ![](files/nargs-in-signature.png)
   Il s'agit en fait du **nombre d'arguments** que prend la fonction !
 
 Ce dernier point illustre une différence fondamentale entre Python et Elixir: en Python, si on re-définit un fonction avec le même nom qu'une fonction existante , on "écrase" la première fonction qui devient donc inaccessible.
@@ -234,9 +234,9 @@ La formule de conversion, telle que donnée sur [Wikipedia](https://fr.wikipedia
 
 💡 Vous trouverez ci-dessous un squelette de code à compléter. Ce dernier vous présente des fonctionnalités supplémentaires d'Elixir et Livebook, à savoir:
 
-- la possibilité de documenter une fonction en ajoutant un attribut `@doc` suivi d'une chaine de caractères juste avant la déclaration de la fonction
-- la possibilité d'écrire des chaines de caratères de plusieurs lignes, via les "triples quotes" (similaires à [ce qui exite en Python](https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str))
-- enfin, la possibilté d'inclure des tests simples dans cette documentation: il s'agit des [DocTests Elixir](https://hexdocs.pm/elixir/docs-tests-and-with.html#doctests) qui sont très proches des [doctest Python](https://docs.python.org/3/library/doctest.html)
+* la possibilité de documenter une fonction en ajoutant un attribut `@doc` suivi d'une chaine de caractères juste avant la déclaration de la fonction
+* la possibilité d'écrire des chaines de caratères de plusieurs lignes, via les "triples quotes" (similaires à [ce qui exite en Python](https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str))
+* enfin, la possibilté d'inclure des tests simples dans cette documentation: il s'agit des [DocTests Elixir](https://hexdocs.pm/elixir/docs-tests-and-with.html#doctests) qui sont très proches des [doctest Python](https://docs.python.org/3/library/doctest.html)
 
 ```elixir
 defmodule FahrenheitConverter do
@@ -290,9 +290,9 @@ Elixir dispose – comme Python d'ailleurs – d'un support très complet pour t
 
 Lorsque vous définissez une chaînes de caractères en Elixir, vous définissez en fait un tableau de valeurs qui est à la fois:
 
-- une `bitstring` c'est-à-dire un tableau de "bits" (0 ou 1 en mémoire)
-- un `binary` c'est-à-dire une bitstring d'octets (dont la taille est multiple de 8)
-- et finalement ce `binary` contient du texte en Unicode
+* une `bitstring` c'est-à-dire un tableau de "bits" (0 ou 1 en mémoire)
+* un `binary` c'est-à-dire une bitstring d'octets (dont la taille est multiple de 8)
+* et finalement ce `binary` contient du texte en Unicode
 
 On peut facilement vérifier toutes ces assetions via des fonctions dédiées:
 
@@ -342,8 +342,8 @@ Il est temps de réaliser un programme un peu plus conséquent.
 
 Pour réaliser cet exercice, vous aurez besoins de fonctions disponibles:
 
-- au sein du [module `Integer`](https://hexdocs.pm/elixir/1.18.4/Integer.html)
-- au sein du [module `String`](https://hexdocs.pm/elixir/1.18.4/String.html)
+* au sein du [module `Integer`](https://hexdocs.pm/elixir/Integer.html)
+* au sein du [module `String`](https://hexdocs.pm/elixir/String.html)
 
 Votre mission sera donc de créer un module permettant de formater un temps donné en secondes sous forme d'une chaîne de caractères `"HH:MM:SS"`
 
