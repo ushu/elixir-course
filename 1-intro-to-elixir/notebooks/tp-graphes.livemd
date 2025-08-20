@@ -19,25 +19,69 @@ ExUnit.start(autorun: false)
 
 ## 1. Représenter un graphe
 
-1. Représenter un graphe
+### Qu’est-ce qu’un graphe ?
 
-On considère un petit graphe qui représente un labyrinthe :
+Un **graphe** $G = (V, E)$ est un couple constitué :
+
+* d’un ensemble $V$ de **sommets** (ou nœuds),
+* d’un ensemble $E \subseteq \{ \{u, v\} \mid u, v \in V, u \ne v \}$ de **paires non ordonnées** appelées **arêtes** (ou liens).
+
+On parle alors de **graphe non orienté** et **simple** (sans boucles ni arêtes multiples).
+
+#### Exemple :
+
+$$
+V = \{A, B, C, D\}, \quad E = \{\{A,B\}, \{A,D\}, \{B,C\}, \{C,D\} \}
+$$
+
+correspond au graphe suivant:
+
+```mermaid
+graph LR
+  A --- B
+  A --- D
+  B --- C
+  C --- D
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Représentation informatique du graphe
+
+Il existe beaucoup de manière de représenter un graphe.
+On peut le représenter par une **carte** (graphe dessiné, voir ci-dessous), par un ensemble de "noeuds" dans la mémoire de l'ordinateur, par une **liste d’adjacence**, ou encore une **matrice d’adjacence**.
+
+Dans ce TP, nous utilisons la **liste d’adjacence**, qui consiste à associer à chaque noeud du graphe la liste des noeuds qui le suivent.
+
+Toujous sur notre exemple, cela donnerait:
+
+```elixir
+graphe_simple = %{
+  "A": [ "B", "D" ], # Les "successeurs de A sont B et D
+  "B": [ "C" ],      # Le successeur de B est D
+  "C": [ "D" ],      # Le successeur de C est D
+}
+```
+
+### Un graphe plus complet
+
+On considère un petit comme celui-ci pour représenter notre labyrinthe :
 
 ```mermaid
 graph LR
   classDef start fill:#dff,stroke:#06c,stroke-width:2px;
   classDef goal  fill:#ffd,stroke:#c60,stroke-width:2px;
 
-  A:::start --- B --- C
-  A --- D
-  B --- E
-  D --- E --- F:::goal
-  C --- F
+  A:::start <--> B <--> C
+  A <--> D
+  B <--> E
+  D <--> E <--> F:::goal
+  C <--> F
 ```
 
 <!-- livebook:{"break_markdown":true} -->
 
-On peut le représenter par une **map d’adjacence** :
+On peut le représenter par une **liste d’adjacence** :
 
 ```elixir
 graph = %{
@@ -52,7 +96,14 @@ graph = %{
 %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
 ```
 
-**Écrire une fonction `GraphInfo.neighbors/2` qui renvoie la liste des voisins d’un nœud.**
+💡 _on remarquera que dans ce cas, le graphe n'est pas "orienté": s'il est permis d'aller de $A$ vers $B$, alors ils est permis d'aller de $B$ vers $A$_
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Écrire une fonction `GraphInfo.neighbors/2` qui renvoie la liste des voisins d’un nœud.
+
+⚠️ Dans le cas où aucune arrête n'est spécifiée pour un noeud, on renverra une liste vide `[]`
+💡 Pensez à consulter la [documentation du module `Map`](https://hexdocs.pm/elixir/Map.html) au besoin
 
 ```elixir
 defmodule GraphInfo do
@@ -61,6 +112,10 @@ defmodule GraphInfo do
     iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
     iex> GraphInfo.neighbors(graph, "A")
     ["B", "D"]
+
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
+    iex> GraphInfo.neighbors(graph, "C")
+    []
 
   """
   def neighbors(graph, node) do
@@ -79,7 +134,10 @@ defmodule GraphInfoCorrige do
     iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
     iex> GraphInfoCorrige.neighbors(graph, "A")
     ["B", "D"]
-
+    
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
+    iex> GraphInfo.neighbors(graph, "C")
+    []
   """
   def neighbors(graph, node) do
     Map.get(graph, node, [])
@@ -179,8 +237,6 @@ defmodule GraphShortestPath do
   
 end
 ```
-
-
 
 ```elixir
 # CORRECTION POSSIBLE
