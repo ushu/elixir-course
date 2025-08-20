@@ -324,7 +324,7 @@ Elixir propose **une syntaxe dite de "pipe" `|>`** qui permet de faire sensiblem
 Démonstration:
 
 ```elixir
-titre_article = "Mon premier blog post"
+titre_article = "Mon premier Blog Post"
 
 titre_article
 |> String.downcase()  # titre_article est passé en argument implicitement
@@ -347,10 +347,6 @@ titre_article
 |> Enum.join("-")
 |> dbg()
 ```
-
-### Exercice d'application
-
-Commencez par **parcourir rapidement la documentation du [module `Enum` d'Elixir](https://hexdocs.pm/elixir/1.18.4/Enum.html)** qui permet de travailler sur les collections (et les listes en particulier).
 
 ## Les fonctions anonymes
 
@@ -393,3 +389,155 @@ et on peut l'**invoquer**.
 ```elixir
 elixir_anon_f.(10)
 ```
+
+### Quel est l'intérêt de ces fonctions anonymes ?
+
+Les fonctions anonymes sont utiles en tant qu'argument passé à d'autres fonctions, dans l'objectif de spécialiser un comportement.
+
+Par exemple, on pourrait vouloir effectuer une opération "en série" sur tous les éléments d'une liste, comme le ferait `map` en Python:
+
+```python
+l = [1, 2, 3, 4]
+
+list(
+  map(
+    lambda x: x ** 3, # on applique cette fonction "cube"
+    l # à tous les éléments de l
+  )  
+)
+```
+
+Pour réaliser la même chose en Elixir, on ira piocher dans les resources du [module `Enum` d'Elixir](https://hexdocs.pm/elixir/1.18.4/Enum.html) qui permet de travailler sur les collections (et les listes en particulier):
+
+```elixir
+l = [1, 2, 3, 4]
+
+l
+|> Enum.map(fn x -> x ** 3 end)
+```
+
+#### Un petit exercice
+
+Le but de cet exercice est avant tout de vous familiariser avec [la documentation d'`Enum`](https://hexdocs.pm/elixir/1.18.4/Enum.html) en recherchant un moyen de réaliser un petit exemple simple:
+
+* on vous donne les liste des couleurs et des valeurs des cartes à jouer classiques (en anglais, car en français "Roi" et "Reine" commencent par la même lettre...)
+* vous devez générer la liste de toutes cartes possbiles en combinant ces deux listes
+
+par ex.: ♠️A pour l'as de pique, ♥️9 pour le neuf de coeur etc.
+
+```elixir
+couleurs = ["♠️", "♥️", "♦️", "♣️"]
+valeurs = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] 
+
+# À vous de jouer !
+```
+
+#### Le problème de "la boucle `for`"
+
+Elixir ne possède pas de boucle `for` comme en Python.
+Il y a des raisons à cela, et en particulier la mémoire "immutable" ne permet pas certains constructions.
+
+Il y a alors deux façons d'itérer une série de valeurs:
+
+* utiliser la _récursion_: ça ne vous paraît sans doute pas (encore) naturel mais c'est très commun
+* utiliser le module `Enum` et en particulier [la fonction `Enum.each/2`](https://hexdocs.pm/elixir/1.18.3/Enum.html#each/2)
+
+Par exemple:
+
+```elixir
+l = [ 1, 2, 3, 4, 5 ]
+
+# Parcourons les valeurs pour écrire dans la console:
+l
+|> Enum.with_index()
+|> Enum.each(fn {x, index} ->
+  IO.puts("la valeur n°#{index+1} = #{x}")
+end)
+# |> dbg()
+```
+
+## Les compréhensions de liste
+
+Je vous ai expliqué qu'au paragraphe précédent qu'Elixir n'avait pas de boucle `for`: c'est à la fois vrai et faux 😅
+
+Si l'on veut être précis, Elixir n'a pas de "boucle `for`" mais une "macro `for`" et cette fonctionnalité est appelée "compréhension" en Elixir. Ce nom n'est pas choisi au hasard: son utilisation est très proche des _compréhensions de listes_ Python.
+
+Illustration: _exécutez la cellulle ci-dessous_ 👇
+
+```elixir
+for i <- [1, 2, 3, 4] do
+  i ** 2
+end
+```
+
+d'un point de vue syntaxique, la compréhension de liste Elixir se construit comme suit:
+
+* le mot-clé `for`
+* suivi d'une assignation de variable, sous la forme `nom_de_variable <- collection`
+* et d'un bloc `do`...`end`
+
+Cette _expression_ retourne finalement une _nouvelle liste_ où chaque élément est le résultat du bloc qui est exécuté.
+
+bien entendu, la collection peut aussi venir d'une variable: par exemple les `couleurs` de cartes définies dans la section précédente:
+
+```elixir
+for c <- couleurs do
+  "#{c}!"
+end
+```
+
+mais bien entendu, les capacités du `for` Elixir ne s'arrêtent pas là !
+
+### Itération de liste en parallèle
+
+Le `for` d'Elixir permet très facilement d'itérer plusieurs listes "en même temps", par exemple:
+
+```elixir
+for c <- couleurs,
+    v <- valeurs do
+  c <> v
+end
+```
+
+nous avons résolu l'exercice précédent en trois lignes !
+
+on pourrait même écrire une version encore plus courte, en remplaçant le bloc `do`...`end` par sa forme abrégée `, do: ...`:
+
+```elixir
+all_cards = for c <- couleurs, v <- valeurs, do: c <> v
+```
+
+on peut vérifier au passage qu'on a bien 52 cartes:
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+length(all_cards)
+```
+
+### Filtrage de données
+
+Il est également possible d'intercaler des "tests" dans notre expression `for`, afin de filtrer certaines valeurs.
+
+Par exemple on pourrait vouloir un jeu de 32 cartes, c'est-à-dire un jeu sans les cartes de 2 à 6:
+
+```elixir
+less_cards =
+  for c <- couleurs,
+      v <- valeurs,
+      # 👇 je rejette les cas où v est cette la liste
+      v not in ~w[2 3 4 5 6] do
+    c <> v
+  end
+```
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+length(less_cards)
+```
+
+Nous n'avons fait qu'éffleurer la surface de ce qui est possible avec les compréhensions Elixir. Pour aller plus loin, vous pouvez consulter:
+
+* la [documentation d'Elixir sur le `for`](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#for/1)
+* l'[article de Mitchell Hanberg](https://www.mitchellhanberg.com/the-comprehensive-guide-to-elixirs-for-comprehension/) sur le sujet

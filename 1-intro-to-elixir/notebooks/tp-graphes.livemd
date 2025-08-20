@@ -1,0 +1,241 @@
+# C1APP – TP Parcours d’un labyrinthe
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.16.1"},
+  {:phoenix_live_view, "~> 1.1"}
+])
+
+ExUnit.configure(exclude: [:skip])
+ExUnit.start(autorun: false)
+```
+
+## Objectif(s)
+
+* Manipuler les **listes** et **maps**.
+* Implémenter un **algorithme simple** (parcours en largeur ou profondeur).
+* Découvrir une représentation **graphique / automate** d’un problème.
+* Écrire et composer des **fonctions**.
+
+## 1. Représenter un graphe
+
+1. Représenter un graphe
+
+On considère un petit graphe qui représente un labyrinthe :
+
+```mermaid
+graph LR
+  classDef start fill:#dff,stroke:#06c,stroke-width:2px;
+  classDef goal  fill:#ffd,stroke:#c60,stroke-width:2px;
+
+  A:::start --- B --- C
+  A --- D
+  B --- E
+  D --- E --- F:::goal
+  C --- F
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+On peut le représenter par une **map d’adjacence** :
+
+```elixir
+graph = %{
+  "A" => ["B", "D"],
+  "B" => ["A", "C", "E"],
+  "C" => ["B", "F"],
+  "D" => ["A", "E"],
+  "E" => ["B", "D", "F"],
+  "F" => ["C", "E"]
+}
+
+%{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+```
+
+**Écrire une fonction `GraphInfo.neighbors/2` qui renvoie la liste des voisins d’un nœud.**
+
+```elixir
+defmodule GraphInfo do
+
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
+    iex> GraphInfo.neighbors(graph, "A")
+    ["B", "D"]
+
+  """
+  def neighbors(graph, node) do
+    []
+  end
+  
+end
+```
+
+```elixir
+# CORRECTION POSSIBLE
+
+defmodule GraphInfoCorrige do
+
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"] }
+    iex> GraphInfoCorrige.neighbors(graph, "A")
+    ["B", "D"]
+
+  """
+  def neighbors(graph, node) do
+    Map.get(graph, node, [])
+  end
+  
+end
+```
+
+## 2. Parcours en largeur (BFS)
+
+Nous voulons désormais parcourir notre graphe "en largeur, c'est à dire:
+
+* on donne à notre fonction un un graph et un noeud de départ
+* il retourne une liste de tous les noeuds, parcourus à partir du noeud courant (voir exemple dans le DocTest)
+
+N'hésitez pas à demander de l'aide à votre encadrant et/ou à vous renseigner sur l'algorithme sur internet.
+
+Pour votre code, vous pourriez utiliser:
+
+* l'opérateur `in` qui permet de tester si un élément est dans une liste: `1 in [1, 2, 3, 4]`
+* la concaténation de deux listes avec `++`: `[1, 2] ++ [3, 4] == [1, 2, 3, 4]`
+* la fonction `Enum.reverse` qui "retourne" une liste
+
+```elixir
+defmodule GraphBFS do
+
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+    iex> GraphBFS.bfs(graph, "A")
+    ["A", "B", "D", "C", "E", "F"]
+  """
+  def bfs(graph, start) do
+    []
+  end
+  
+end
+```
+
+```elixir
+# CORRECTION POSSIBLE
+
+defmodule GraphBFSCorrige do
+
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+    iex> GraphBFSCorrige.bfs(graph, "A")
+    ["A", "B", "D", "C", "E", "F"]
+  """
+  def bfs(graph, start) do
+    bfs(graph, [start], [])
+  end
+
+  defp bfs(_graph, [], visited), do: Enum.reverse(visited)
+  
+  defp bfs(graph, [current | rest], visited) do
+    dbg(visited)
+    if current in visited do
+      bfs(graph, rest, visited) # déjà visité
+    else
+      new_nodes = GraphInfoCorrige.neighbors(graph, current)
+      bfs(
+        graph, 
+        rest ++ new_nodes, # on "enqueue" les noeuds à visiter
+        [current | visited] # et on rajoute le noeud visite dans la liste
+      )
+    end
+  end
+  
+end
+```
+
+```elixir
+GraphBFSCorrige.bfs(graph, "A")
+```
+
+## 3. Plus cours chemin (greedy)
+
+Votre objectif ici est de _reprendre votre code de parcours en largeur_ afin de trouver le plus cours chemin vers un point "objectif":
+
+* on parcours toujours le graphe en largeur
+* au lieu de ne stocker que les noeuds, on stocke les noeuds et le chemin qui mène à ce noeud (par ex. dans un tuple)
+* quand on arrive à l'objectif on a trouvé le chemin le plus cours (c'est le plus court grâce au parcours en largeur)
+
+À vous de jouer:
+
+```elixir
+defmodule GraphShortestPath do
+
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+    iex> GraphShortestPath.shortest_path(graph, "A", "C")
+    ["A","B","C"]
+  """
+  def shortest_path(graph, start, goal) do
+    []
+  end
+  
+end
+```
+
+
+
+```elixir
+# CORRECTION POSSIBLE
+
+defmodule GraphShortestCorrige do
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+    iex> GraphShortestCorrige.shortest_path(graph, "A", "C")
+    ["A","B","C"]  
+  """
+  def shortest_path(graph, start, goal) do
+    shortest_path(graph, [{start, [start]}], goal, [])
+  end
+
+  defp shortest_path(_graph, [], _goal, _visited), do: nil
+
+  defp shortest_path(graph, [{current, path} | rest], goal, visited) do
+    dbg(visited)
+    cond do
+      current == goal ->
+        # on a trouvé !
+        path
+
+      current in visited ->
+        # on skip le noeud
+        shortest_path(graph, rest, goal, visited)
+
+      true ->
+        new_nodes_with_path =
+          GraphInfoCorrige.neighbors(graph, current)
+          |> Enum.map(fn n ->
+            # on crée les tuples { noeud, chemin }
+            {n, path ++ [n]}
+          end)
+
+        shortest_path(graph, rest ++ new_nodes_with_path, goal, [current | visited])
+    end
+  end
+end
+```
+
+```elixir
+data = %{
+  id: 1,
+  email: "user@example.com",
+  inserted_at: ~U[2022-01-01T10:00:00Z],
+  addresses: [
+    %{
+      country: "pl",
+      city: "Kraków",
+      street: "Karmelicka",
+      zip: "00123"
+    }
+  ]
+}
+
+Kino.Tree.new(data)
+```
