@@ -32,6 +32,10 @@ Ce TP continue notre approfondissement de la syntaxe Elixir.
 
 [![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2F3-les-fonctions.livemd)
 
+### Un TP d'application simple
+
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F1-intro-to-elixir%2Fnotebooks%2F4-tp-graphes.livemd)
+
 # Contact et questions
 
 Pour toute question, vous pouvez me contacter par email sur ma boite de l'École [aurelien.noce@minesparis.psl.eu](mailto:aurelien.noce@minesparis.psl.eu).
