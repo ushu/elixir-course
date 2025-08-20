@@ -219,9 +219,76 @@ end
 GraphBFSCorrige.bfs(graph, "A")
 ```
 
-#### Exercice optionnel: ré-écrire notre algorithme avec la librairie `:queue`
+## 3. Plus cours chemin (Dijkstra-like)
 
-_**À faire uniquement si vous êtes très en avance !**_
+Votre objectif ici est de _reprendre votre code de parcours en largeur_ afin de trouver le plus cours chemin vers un point "objectif".
+
+Même si ça peut paraître compliqué, nous avons toutes les briques nécessaires pour réaliser ce calcul.
+
+- jusqu'à maintenant, nous construisions une liste de "noeuds visités" que nous retournions à la fin de l'algorithme
+- vous allez faire évoluer cette liste vers une liste de tuple `{ "Noeud", [ "Chemin", "vers", "ce", "noeud" ] }`
+- dès que atteindra le noeud objectif, on retournera le chemin vers ce noeud
+
+_encore une fois, n'hésitez pas à solliciter l'aide de votre professeur !_
+
+À vous de jouer:
+
+```elixir
+defmodule GraphShortestPath do
+
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+    iex> GraphShortestPath.shortest_path(graph, "A", "C")
+    ["A","B","C"]
+  """
+  def shortest_path(graph, start, goal) do
+    []
+  end
+
+end
+```
+
+```elixir
+# CORRECTION POSSIBLE
+
+defmodule GraphShortestCorrige do
+  @doc """
+    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
+    iex> GraphShortestCorrige.shortest_path(graph, "A", "C")
+    ["A","B","C"]
+  """
+  def shortest_path(graph, start, goal) do
+    shortest_path(graph, [{start, [start]}], goal, [])
+  end
+
+  defp shortest_path(_graph, [], _goal, _visited), do: nil
+
+  defp shortest_path(graph, [{current, path} | rest], goal, visited) do
+    dbg(visited)
+    cond do
+      current == goal ->
+        # on a trouvé !
+        path
+
+      current in visited ->
+        # on skip le noeud
+        shortest_path(graph, rest, goal, visited)
+
+      true ->
+        new_nodes_with_path =
+          GraphInfoCorrige.neighbors(graph, current)
+          |> Enum.map(fn n ->
+            # on crée les tuples { noeud, chemin }
+            {n, path ++ [n]}
+          end)
+
+        shortest_path(graph, rest ++ new_nodes_with_path, goal, [current | visited])
+    end
+  end
+end
+```
+
+### Exercice optionnel: ré-écrire notre algorithme BFS avec la librairie `:queue`
 
 Nous pouvons utiliser [la librairie `:queue` d'Erlang](https://www.erlang.org/doc/apps/stdlib/queue.html) pour avoir une structure de données, plus adapté.
 
@@ -369,74 +436,5 @@ defmodule GraphBFSQueueCorrige do
     end
   end
 
-end
-```
-
-## 3. Plus cours chemin (Dijkstra-like)
-
-Votre objectif ici est de _reprendre votre code de parcours en largeur_ afin de trouver le plus cours chemin vers un point "objectif".
-
-Même si ça peut paraître compliqué, nous avons toutes les briques nécessaires pour réaliser ce calcul.
-
-- jusqu'à maintenant, nous construisions une liste de "noeuds visités" que nous retournions à la fin de l'algorithme
-- vous allez faire évoluer cette liste vers une liste de tuple `{ "Noeud", [ "Chemin", "vers", "ce", "noeud" ] }`
-- dès que atteindra le noeud objectif, on retournera le chemin vers ce noeud
-
-_encore une fois, n'hésitez pas à solliciter l'aide de votre professeur !_
-
-À vous de jouer:
-
-```elixir
-defmodule GraphShortestPath do
-
-  @doc """
-    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
-    iex> GraphShortestPath.shortest_path(graph, "A", "C")
-    ["A","B","C"]
-  """
-  def shortest_path(graph, start, goal) do
-    []
-  end
-
-end
-```
-
-```elixir
-# CORRECTION POSSIBLE
-
-defmodule GraphShortestCorrige do
-  @doc """
-    iex> graph = %{ "A" => ["B", "D"], "B" => ["A", "C", "E"], "C" => ["B", "F"], "D" => ["A", "E"], "E" => ["B", "D", "F"], "F" => ["C", "E"] }
-    iex> GraphShortestCorrige.shortest_path(graph, "A", "C")
-    ["A","B","C"]
-  """
-  def shortest_path(graph, start, goal) do
-    shortest_path(graph, [{start, [start]}], goal, [])
-  end
-
-  defp shortest_path(_graph, [], _goal, _visited), do: nil
-
-  defp shortest_path(graph, [{current, path} | rest], goal, visited) do
-    dbg(visited)
-    cond do
-      current == goal ->
-        # on a trouvé !
-        path
-
-      current in visited ->
-        # on skip le noeud
-        shortest_path(graph, rest, goal, visited)
-
-      true ->
-        new_nodes_with_path =
-          GraphInfoCorrige.neighbors(graph, current)
-          |> Enum.map(fn n ->
-            # on crée les tuples { noeud, chemin }
-            {n, path ++ [n]}
-          end)
-
-        shortest_path(graph, rest ++ new_nodes_with_path, goal, [current | visited])
-    end
-  end
 end
 ```
