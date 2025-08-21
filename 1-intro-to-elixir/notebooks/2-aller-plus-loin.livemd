@@ -623,6 +623,17 @@ dbg(a)
 dbg(rest)
 ```
 
+### Échec de pattern-matcing
+
+⚠️ **ATTENTION** si Elixir n'est pas capable de trouver une correspondance entre les éléments à gauche et à droite du `=`, cela génèrera une erreur de type `MatchError`:
+
+<!-- livebook:{"continue_on_error":true} -->
+
+```elixir
+# Ici nous n'avons pas le même nombre de termes à gauche et à droite !
+[a, 1] = [2, 3, 4]
+```
+
 <!-- livebook:{"branch_parent_index":0} -->
 
 ## (Quelques) Structure conditionnelles

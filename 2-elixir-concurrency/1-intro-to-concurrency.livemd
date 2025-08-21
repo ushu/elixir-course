@@ -32,6 +32,8 @@ end
 * Savoir **créer** un processus (`spawn/1`).
 * **Communiquer** entre processus (`send`/`receive`, boîtes aux lettres, timeouts).
 
+<!-- livebook:{"branch_parent_index":0} -->
+
 ## BEAM, isolation et tolérance aux pannes
 
 Vous avez peut-être déjà enetendu le terme "processus" en parlant de l'exécution de programmes sur votre ordinateur ?
@@ -98,6 +100,8 @@ Vous devriez avoir un résultat qui ressemble au suivant:
 
 * l'appel à `self/0` retourne toujours le PID du process _courant_: c'est pourquoi elle renvoie un résultat différent lorsqu'elle est appelée dans le nouveau processus créé par `spawn/1`
 * le PID du nouveau processus est également _retourné_ par l'appel à `spawn/1` _au parent_: l'intérêt étant que grâce à ce PID le parent pourra envoyer des messages au process enfant !
+
+<!-- livebook:{"branch_parent_index":0} -->
 
 ## Communication entre les processus
 
@@ -224,6 +228,8 @@ receive do
 end
 ```
 
+<!-- livebook:{"branch_parent_index":0} -->
+
 ## Un "long-lived process"
 
 Dans tous nos exemples ci-dessus, nos processus s'arrêtent dès la fin de l'exécution de la fonction. Cependant, il serait intéressant d'avoir des processus capables de traiter _plusieurs messages_ d'affilée sans s'arrêter.
@@ -297,7 +303,9 @@ TP.trace([process1, process2], fn ->
 end)
 ```
 
-## Exercice d'application: MapReduce simple
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Exercice d'application: MapReduce
 
 Nous allons terminer ce TP en créant un premier module d'exécution distributée.
 
@@ -355,7 +363,7 @@ defmodule MapReduce1 do
   end
 
   # Cadeau 🎁
-  defp count_words(text) do
+  def count_words(text) do
     text
     |> String.downcase()
     |> String.replace(~r/[^[:alnum:]\p{L}\s-]/u, " ")
@@ -403,7 +411,6 @@ lac_lamartine = [
   "Du rivage charmé frappèrent les échos ;",
   "Le flot fut attentif, et la voix qui m'est chère",
   "Laissa tomber ces mots :",
-
 
   "Ô temps ! suspends ton vol, et vous, heures propices,",
   "Suspendez votre cours !",
@@ -466,3 +473,7 @@ TP.trace(self(), fn ->
   MapReduce1.run(lac_lamartine)
 end)
 ```
+
+---
+
+Vous pouvez maintenant vous rendre au [TP suivant](./2-process-relations.livemd) pour continuer votre exploration de la programmation concurrente avec Elixir.
