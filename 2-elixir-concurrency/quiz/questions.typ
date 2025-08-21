@@ -201,15 +201,11 @@
 
       ```elixir
       send(self(), :hello)
-      ```
 
-      puis:
-
-      ```elixir
       receive do
         msg -> msg
       end
-      ``` ?
+      ```
     ],
     choices: (
       [Erreur],

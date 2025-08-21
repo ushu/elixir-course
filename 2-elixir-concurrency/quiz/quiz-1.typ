@@ -1,6 +1,11 @@
 #import "@preview/examit:0.1.1": *
 #import "questions.typ": questions
 
+#set text(size: 9pt)
+// https://github.com/typst/typst/issues/2871#issuecomment-1892606808
+#show raw: set text(font: "Fira Code", features: (calt: 0))
+
+
 #show: examit.with(
   questions: questions,
 
@@ -12,7 +17,7 @@
   // Mise en page
   margin: (left: 20mm, top: 10mm, bottom: 12mm, right: 20mm),
   cols: 2,
-  gutter: 20mm,
+  gutter: 25mm,
   lang: "fr",
   font: "New Computer Modern",
 
