@@ -5,7 +5,6 @@
 // https://github.com/typst/typst/issues/2871#issuecomment-1892606808
 #show raw: set text(font: "Fira Code", features: (calt: 0))
 
-
 #show: examit.with(
   questions: questions,
 
@@ -20,16 +19,18 @@
   gutter: 25mm,
   lang: "fr",
   font: "New Computer Modern",
-
-  // Réglages d’examen
-  instructions: [
-    *Cochez une seule réponse par question.*
-
-    _Les questions 1–12 sont plutôt accessibles, 13–20 un peu plus techniques._
-  ],
   namebox: "left",
   answerlinelength: 10cm,
   defaultpoints: 1,
   extrapicturebox: false,
+
+  // Réglages d’examen
+  instructions: [
+    #v(0.5em)
+    *Cochez une seule réponse par question.*
+
+    _Les questions 1–12 sont plutôt accessibles, 13–20 un peu plus techniques._
+    #v(1em)
+  ],
 )
 

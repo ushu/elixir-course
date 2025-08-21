@@ -1,5 +1,3 @@
-#import "@preview/examit:0.1.1": *
-
 #let questions = (
   (
     // 1
@@ -71,10 +69,10 @@
     // 6
     question: [Que se passe-t-il avec : ```elixir [a, b] = [1]``` ?],
     choices: (
-      [`a = 1` et `b = nil`],
+      [```elixir a = 1``` et ```elixir b = nil```],
       [Erreur de correspondance (*MatchError*)],
-      [`a = [1]`, `b = []`],
-      [`a = 1`, `b = 0`],
+      [```elixir a = [1]```, ```elixir b = []```],
+      [```elixir a = 1```, ```elixir b = 0```],
     ),
     horizontal: false,
     sameline: false,
@@ -210,8 +208,8 @@
     choices: (
       [Erreur],
       [Bloque indéfiniment],
-      [nil],
-      [`:hello`],
+      [```elixir nil```],
+      [```elixir :hello```],
     ),
     horizontal: false,
     sameline: false,
