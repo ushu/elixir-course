@@ -2,6 +2,10 @@
 
 Ce dépôt git contient les supports du deuxième cours.
 
+## Quiz du cours précédent
+
+Le texte de votre quiz, [ici](./quiz/quiz.pdf)
+
 ## Notebooks
 
 Les différents notebooks utilisés en cours sont disponibles dans le sous-répertoire [`notebooks`](./notebooks/)
