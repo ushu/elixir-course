@@ -365,58 +365,6 @@ Benchee.run(
 )
 ```
 
-### Exercice avancé (si vous êtes _très_ en avance): Limiter le nombre de processus lancés
-
-<!-- livebook:{"break_markdown":true} -->
-
-Modifiez la version concurrente du code pour **limiter le nombre de process fils** à un nombre limité, peu importe la taille de la liste en entrée.
-
-Vous pouvez partir du code suivant (c'est le même code que le code de départ):
-
-```elixir
-defmodule TP2Exercice3 do
-  def sum_all_sync(list_of_lists) do
-    list_of_lists
-    |> Enum.map(&sum_cubes_in_list/1)
-    |> Enum.sum()
-  end
-
-  def sum_all_parallel(list_of_lists) do
-    master_pid = self()
-
-    for list <- list_of_lists do
-      spawn(fn ->
-        partial_result = sum_cubes_in_list(list)
-        send(master_pid, {self(), partial_result})
-      end)
-    end
-    |> receive_results()
-  end
-
-  # Calcule la som
-  def sum_cubes_in_list(list) do
-    list
-    |> Enum.map(fn x -> x ** 3 end)
-    |> Enum.sum()
-  end
-
-  # 💡 Nouveauté : déclaration d'une valeur par défaut pour le paramètre "sum"
-  defp receive_results(worker_pids, sum \\ 0)
-
-  defp receive_results([], sum), do: sum
-
-  defp receive_results(worker_pids, sum) do
-    receive do
-      {worker_pid, partial_sum} ->
-        receive_results(
-          List.delete(worker_pids, worker_pid),
-          sum + partial_sum
-        )
-    end
-  end
-end
-```
-
 <!-- livebook:{"branch_parent_index":0} -->
 
 ## Processus liés
@@ -523,3 +471,59 @@ Pour créer ce lien, **nous avons** simplement **remplacé l'appel à [`spawn/1`
 
 * il existe des fonctions [`Process.link/1`](https://hexdocs.pm/elixir/Process.html#link/1) et [`Process.unlink/1`](https://hexdocs.pm/elixir/Process.html#unlink/1) qui permettent de liér / dé-lier des processus déjà lancés
 * par défaut, le lien est _bi-directionnel_: si un des processus enfants s'arrête sur une erreur, le processus parent sera également impacté ! <br> Cela peut être souhaité, mais si l'on souhaite avoir plus de contrôle – par ex. un processus parent qui ne s'arrête pas mais puisse traiter les crash de ses processus enfants – il faudra re-configurer le process parent avec [`Process.flag(:trap_exit, true)`](https://hexdocs.pm/elixir/Process.html#flag/2) ce qui va convertir l'évènement de "demande d'arrêt de processus" en un message reçu dans la mailbox. <br> _Cette notion HPC ne sera pas approfondie dans ce cours: nous découvrirons d'autres constructions pour organiser nos programmes avec une relation hiérarchique entre processus parents-enfants dans les notebooks à venir_
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Exercice avancé : limiter le nombre de processus lancés
+
+_Uniquement si vous êtes **très** en avance !_
+
+_n'hésitez pas à demander de l'aide à votre enseignant•e_
+
+Modifiez la version concurrente du code de la section "calcul distributé" pour **limiter le nombre de process fils** à un nombre limité, peu importe la taille de la liste en entrée.
+
+Vous pouvez re-partir du code suivant (c'est le même code que le code de l'exercice précédent):
+
+```elixir
+defmodule TP2Exercice3 do
+  def sum_all_sync(list_of_lists) do
+    list_of_lists
+    |> Enum.map(&sum_cubes_in_list/1)
+    |> Enum.sum()
+  end
+
+  def sum_all_parallel(list_of_lists) do
+    master_pid = self()
+
+    for list <- list_of_lists do
+      spawn(fn ->
+        partial_result = sum_cubes_in_list(list)
+        send(master_pid, {self(), partial_result})
+      end)
+    end
+    |> receive_results()
+  end
+
+  # Calcule la som
+  def sum_cubes_in_list(list) do
+    list
+    |> Enum.map(fn x -> x ** 3 end)
+    |> Enum.sum()
+  end
+
+  # 💡 Nouveauté : déclaration d'une valeur par défaut pour le paramètre "sum"
+  defp receive_results(worker_pids, sum \\ 0)
+
+  defp receive_results([], sum), do: sum
+
+  defp receive_results(worker_pids, sum) do
+    receive do
+      {worker_pid, partial_sum} ->
+        receive_results(
+          List.delete(worker_pids, worker_pid),
+          sum + partial_sum
+        )
+    end
+  end
+end
+```

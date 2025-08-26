@@ -1,0 +1,188 @@
+# C1N3 – Le module Task
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.16.1"},
+  {:req, "~> 0.5.15"},
+  {:merquery, "~> 0.3.0"}
+])
+```
+
+## Motivation
+
+Dans les notebooks précédents, nous avons découvert les bases de la concurrence en Elixir à travers les processus légers (processus BEAM), la fonction [`spawn/1`](https://hexdocs.pm/elixir/Kernel.html#spawn/1) et l’envoi/réception de messages.
+
+Désormais, il est temps de construire sur ces notions fondamentales et d’explorer un outil haut niveau fourni par Elixir pour simplifier l’exécution concurrente : le module [`Task`](https://hexdocs.pm/elixir/Task.html).
+
+Ce module offre des fonctions prêtes à l’emploi pour lancer des tâches asynchrones et en récupérer facilement les résultats, sans avoir à gérer explicitement les messages entre processus.
+
+Nous allons dans ce qui suit présenter le module Task, illustrer la différence entre une exécution séquentielle et parallèle, et pratiquer avec des exercices plus complets.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Module Task vs exécution synchrone
+
+Elixir fournit le module Task pour faciliter l’exécution de fonctions de façon **asynchrone** – c’est-à-dire concurrente, dans un processus séparé – et la récupération de leur résultat ultérieurement.
+
+En interne, lancer un Task revient à créer un nouveau processus, comme avec spawn, mais Task nous évite de gérer manuellement les messages de retour : il s’occupe de lier le processus, d’envoyer le résultat ou l’erreur, et fournit des fonctions pour attendre ce résultat proprement.
+
+## Exemple : Utilisation de Task.async et Task.await
+
+Comparons une utilisation simple du module `Task` par rapport à l'approche vue précédemment:
+
+```elixir
+# Lance une tâche
+task =
+  Task.async(fn ->
+    # Simule un calcul long de 1 seconde
+    Process.sleep(1000)
+    5 * 5
+  end)
+
+IO.puts("Tâche lancée pour calculer 5^2 ...")
+
+# Ici, on pourrait faire d'autres opérations pendant que la tâche s'exécute...
+
+# Récupérer le résultat de la tâche (cela bloque jusqu'à ce que ce soit prêt)
+result = Task.await(task)
+IO.puts("Résultat obtenu : #{result}")
+```
+
+On remarque immédiatement:
+
+* que l'appel à [`Task.async/1`](https://hexdocs.pm/elixir/Task.html#async/1) a remplacé les appels à [`spawn/1`](https://hexdocs.pm/elixir/Kernel.html#spawn/1)/[`spawn_link/1`](https://hexdocs.pm/elixir/Kernel.html#spawn_link/1)
+* qu'il n'y a plus de bloc [`receive do ... end`](https://hexdocs.pm/elixir/Kernel.SpecialForms.html#receive/1): c'est désormais [`Task.await/1`](https://hexdocs.pm/elixir/Task.html#await/1) qui se charge de récupérer le résultat de la commande lancée plus tôt
+
+💡 Lorsqu’on utilise [`Task.async/1`](https://hexdocs.pm/elixir/Task.html#async/1), la tâche lancée est _liée au processus appelant_ !
+
+<!-- livebook:{"break_markdown":true} -->
+
+On pourrait d'ailleurs lancer plusieurs tâches en parallèle, sans perturber le fonctionnement du processus parent:
+
+```elixir
+sleep_and_square = fn ->
+  n = :rand.uniform(5) # nombre alératoire entre 1 et 5
+  Process.sleep(n * 1000)
+  n * n
+end
+
+# lancement des tâches
+task1 = Task.async(sleep_and_square)
+task2 = Task.async(sleep_and_square)
+
+# Récupération des résultats une fois prêts
+result1 = Task.await(task1)
+result2 = Task.await(task2)
+IO.puts("Résultat obtenu (tâche n°1) : #{result1}")
+IO.puts("Résultat obtenu (tâche n°1) : #{result2}")
+```
+
+Le fonctionnement global est illustré dans le schéma ci-dessous:
+
+<!-- livebook:{"break_markdown":true} -->
+
+```mermaid
+sequenceDiagram
+    participant Principal
+    participant Tâche1
+    participant Tâche2
+
+    Note over Principal,Tâche1: Démarrage de la première tâche
+    Principal->>Tâche1: Task.async(fn1)
+    Note right of Tâche1: Tâche1 démarre en arrière-plan
+
+    Note over Principal,Tâche2: Démarrage de la deuxième tâche
+    Principal->>Tâche2: Task.async(fn2)
+    Note right of Tâche2: Tâche2 démarre en arrière-plan
+
+    Note over Principal: (Le processus principal continue son exécution...)
+
+    Tâche1-->>Principal: renvoie le résultat1 (terminé)
+    Tâche2-->>Principal: renvoie le résultat2 (terminé)
+
+    Principal->>Principal: Task.await(resultat1) <br/> Task.await(resultat2) 
+    Note over Principal: Récupération des résultats une fois prêts
+```
+
+<!-- livebook:{"break_markdown":true} -->
+
+💡 il existe également une fonction [`Task.await_many/1`](https://hexdocs.pm/elixir/Task.html#await_many/2) qui permet d'attendre le résultat de plusieurs tâches en une seule commande (ici avec `Task.await_many([task1, task2])`).
+
+## Pourquoi organiser son code ainsi ?
+
+Toujours dans un scénario où nous lançons des tâches "longues" – par ex. des calculs ou des requêtes sur internet – il devient rapidement intéressant de "paralléliser" l'exécution de notre code afin de gagner en performance.
+
+Comparons l'approche avec parallélisation et l'approche synchrone:
+
+```elixir
+# Nos tâches longue durée
+tache_a = fn -> Process.sleep(2000); "Opération 1 terminée" end
+tache_b = fn -> Process.sleep(2000); "Opération 2 terminée" end
+```
+
+```elixir
+# exécution synchrone
+
+temps_depart_ms = System.monotonic_time(:millisecond)
+
+tache_a.()
+tache_b.()
+
+duree_ms = System.monotonic_time(:millisecond) - temps_depart_ms
+IO.puts "Durée d'exécution: #{duree_ms}ms"
+```
+
+```elixir
+# exécution concurrente
+temps_depart_ms = System.monotonic_time(:millisecond)
+
+# Lancement des tâches
+task1 = Task.async(tache_a)
+task2 = Task.async(tache_b)
+
+# Attente des résultats
+Task.await_many([task1, task2])
+
+duree_ms = System.monotonic_time(:millisecond) - temps_depart_ms
+IO.puts "Durée d'exécution: #{duree_ms}ms"
+```
+
+On comprend immédiatement l'intérêt de la seconde approche: le temps d'exécution n'est plus la somme des temps individuels des différents tâches, mais devient (à quelques ms près) la durée de la tâche la plus longue.
+
+On peut l'illustrer par le schéma:
+
+<!-- livebook:{"break_markdown":true} -->
+
+```mermaid
+gantt
+    dateFormat  ss
+    axisFormat  %Ss
+    section Séquentiel
+    Tâche_A :done, seq1, 00, 2s
+    Tâche_B :done, seq2, after seq1, 2s
+    section Parallèle
+    Tâche_A :done, par1, 00, 2s
+    Tâche_B :done, par2, 00, 2s
+```
+
+<!-- livebook:{"branch_parent_index":0} -->
+
+## Faire des requêtes HTTP (internet) avec Elixir
+
+<!-- livebook:{"attrs":"eyJxdWVyaWVzIjpbeyJhdXRoIjp7InNjaGVtZSI6Im5vbmUiLCJ0eXBlIjowLCJ2YWx1ZSI6IiJ9LCJib2R5Ijp7ImNvbnRlbnRUeXBlIjoibm9uZSIsImZvcm0iOltdLCJyYXciOiIifSwiaGVhZGVycyI6W10sIm9wdGlvbnMiOnsiY29udGVudFR5cGUiOiJlbGl4aXIiLCJyYXciOiIifSwicGFyYW1zIjpbXSwicGx1Z2lucyI6W3siYWN0aXZlIjpmYWxzZSwiZGVzY3JpcHRpb24iOiJBIGNvbGxlY3Rpb24gb2Ygc3RlcHMsIHVzYWJsZSB3aXRoIFJlcS4iLCJuYW1lIjoiQ3VybFJlcS5QbHVnaW4iLCJ2ZXJzaW9uIjpudWxsfV0sInJlcXVlc3RfdHlwZSI6ImdldCIsInN0ZXBzIjp7ImVycm9yX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9XSwicmVxdWVzdF9zdGVwcyI6W3siYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIHRoZSB1c2VyLWFnZW50IGhlYWRlci4iLCJuYW1lIjoicHV0X3VzZXJfYWdlbnQifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiQXNrcyB0aGUgc2VydmVyIHRvIHJldHVybiBjb21wcmVzc2VkIHJlc3BvbnNlLiIsIm5hbWUiOiJjb21wcmVzc2VkIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkVuY29kZXMgdGhlIHJlcXVlc3QgYm9keS4iLCJuYW1lIjoiZW5jb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBiYXNlIFVSTCBmb3IgYWxsIHJlcXVlc3RzLiIsIm5hbWUiOiJwdXRfYmFzZV91cmwifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyByZXF1ZXN0IGF1dGhlbnRpY2F0aW9uLiIsIm5hbWUiOiJhdXRoIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkFkZHMgcGFyYW1zIHRvIHJlcXVlc3QgcXVlcnkgc3RyaW5nLiIsIm5hbWUiOiJwdXRfcGFyYW1zIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlVzZXMgYSB0ZW1wbGF0ZWQgcmVxdWVzdCBwYXRoLiIsIm5hbWUiOiJwdXRfcGF0aF9wYXJhbXMifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyB0aGUgXCJSYW5nZVwiIHJlcXVlc3QgaGVhZGVyLiIsIm5hbWUiOiJwdXRfcmFuZ2UifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiUGVyZm9ybXMgSFRUUCBjYWNoaW5nIHVzaW5nIGBpZi1tb2RpZmllZC1zaW5jZWAgaGVhZGVyLiIsIm5hbWUiOiJjYWNoZSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIGFkYXB0ZXIgdG8gYHJ1bl9wbHVnLzFgLiIsIm5hbWUiOiJwdXRfcGx1ZyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJDb21wcmVzc2VzIHRoZSByZXF1ZXN0IGJvZHkuIiwibmFtZSI6ImNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBleHBlY3RlZCByZXNwb25zZSBib2R5IGNoZWNrc3VtLiIsIm5hbWUiOiJjaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTaWducyByZXF1ZXN0IHdpdGggQVdTIFNpZ25hdHVyZSBWZXJzaW9uIDQuIiwibmFtZSI6InB1dF9hd3Nfc2lndjQifV0sInJlc3BvbnNlX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJIYW5kbGVzIEhUVFAgNHh4LzV4eCBlcnJvciByZXNwb25zZXMuIiwibmFtZSI6ImhhbmRsZV9odHRwX2Vycm9ycyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJGb2xsb3dzIHJlZGlyZWN0cy4iLCJuYW1lIjoicmVkaXJlY3QifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiRGVjb21wcmVzc2VzIHRoZSByZXNwb25zZSBib2R5IGJhc2VkIG9uIHRoZSBgY29udGVudC1lbmNvZGluZ2AgaGVhZGVyLiIsIm5hbWUiOiJkZWNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiVmVyaWZpZXMgdGhlIHJlc3BvbnNlIGJvZHkgY2hlY2tzdW0uIiwibmFtZSI6InZlcmlmeV9jaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJEZWNvZGVzIHJlc3BvbnNlIGJvZHkgYmFzZWQgb24gdGhlIGRldGVjdGVkIGZvcm1hdC4iLCJuYW1lIjoiZGVjb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjpudWxsLCJuYW1lIjoib3V0cHV0In1dfSwidXJsIjoiaHR0cHM6Ly9wb2tlYXBpLmNvL2FwaS92Mi9wb2tlbW9uL3Bpa2FjaHUiLCJ2YXJpYWJsZSI6InJlc3AiLCJ2ZXJicyI6WyJnZXQiLCJwb3N0IiwicHV0IiwicGF0Y2giLCJkZWxldGUiLCJoZWFkIiwib3B0aW9ucyJdfV0sInF1ZXJ5SW5kZXgiOjB9","chunks":null,"kind":"Elixir.Merquery.SmartCell","livebook_object":"smart_cell"} -->
+
+```elixir
+req =
+  Req.new(
+    method: :get,
+    url: "https://pokeapi.co/api/v2/pokemon/pikachu",
+    headers: %{},
+    params: %{}
+  )
+{req, resp} = Req.request(req)
+resp
+```
+
+```elixir
+
+```
