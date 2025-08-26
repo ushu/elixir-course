@@ -4,7 +4,10 @@
 Mix.install([
   {:kino, "~> 0.16.1"},
   {:req, "~> 0.5.15"},
-  {:merquery, "~> 0.3.0"}
+  {:merquery, "~> 0.3.0"},
+  {:nx, "~> 0.10.0"},
+  {:nx_image, "~> 0.1.2"},
+  {:image, "~> 0.62.0"}
 ])
 ```
 
@@ -12,19 +15,7 @@ Mix.install([
 
 Dans les notebooks précédents, nous avons découvert les bases de la concurrence en Elixir à travers les processus légers (processus BEAM), la fonction [`spawn/1`](https://hexdocs.pm/elixir/Kernel.html#spawn/1) et l’envoi/réception de messages.
 
-Désormais, il est temps de construire sur ces notions fondamentales et d’explorer un outil haut niveau fourni par Elixir pour simplifier l’exécution concurrente : le module [`Task`](https://hexdocs.pm/elixir/Task.html).
-
-Ce module offre des fonctions prêtes à l’emploi pour lancer des tâches asynchrones et en récupérer facilement les résultats, sans avoir à gérer explicitement les messages entre processus.
-
-Nous allons dans ce qui suit présenter le module Task, illustrer la différence entre une exécution séquentielle et parallèle, et pratiquer avec des exercices plus complets.
-
-<!-- livebook:{"break_markdown":true} -->
-
-### Module Task vs exécution synchrone
-
-Elixir fournit le module Task pour faciliter l’exécution de fonctions de façon **asynchrone** – c’est-à-dire concurrente, dans un processus séparé – et la récupération de leur résultat ultérieurement.
-
-En interne, lancer un Task revient à créer un nouveau processus, comme avec spawn, mais Task nous évite de gérer manuellement les messages de retour : il s’occupe de lier le processus, d’envoyer le résultat ou l’erreur, et fournit des fonctions pour attendre ce résultat proprement.
+Désormais, il est temps de construire sur ces notions fondamentales et d’explorer un outil haut niveau fourni par Elixir pour simplifier l’exécution concurrente : le module [`Task`](https://hexdocs.pm/elixir/Task.html). Ce module offre des fonctions prêtes à l’emploi pour lancer des tâches asynchrones et en récupérer facilement les résultats, sans avoir à gérer explicitement les messages entre processus.
 
 ## Exemple : Utilisation de Task.async et Task.await
 
@@ -122,7 +113,6 @@ tache_b = fn -> Process.sleep(2000); "Opération 2 terminée" end
 
 ```elixir
 # exécution synchrone
-
 temps_depart_ms = System.monotonic_time(:millisecond)
 
 tache_a.()
@@ -165,9 +155,29 @@ gantt
     Tâche_B :done, par2, 00, 2s
 ```
 
+<!-- livebook:{"break_markdown":true} -->
+
+Nous allons maintenant illustrer tout ça sur un exemple plus concret:
+
 <!-- livebook:{"branch_parent_index":0} -->
 
 ## Faire des requêtes HTTP (internet) avec Elixir
+
+Nous allons maintenant charger des données depuis internet: il vous faudra évidemment une connexion fonctionnelle pour continuer ce TP, même si nous ne chargerons que peu de données en preatique !
+
+Nous allons utiliser deux ressources externes:
+
+* la librairie [`Req`](https://hexdocs.pm/req/readme.html) d'Elixir, qui est la façon standard ("haut niveau") de faire des requêtes sur internet
+* l'API publique "[PokéAPI](https://pokeapi.co/)" qui propose gratuitement une base de données sur les personnages des jeux Pokemon
+
+## Exercice: chargement d'informations sur un Pokemon
+
+Nous allons charger les informations sur le pokemon `pikachu` en effectuant:
+
+* un recherche de type "GET"
+* à l'adresse `https://pokeapi.co/api/v2/pokemon/pikachu`
+
+Complétez les paramètre dans l'interface ci-dessous pour effectuer votre appel:
 
 <!-- livebook:{"attrs":"eyJxdWVyaWVzIjpbeyJhdXRoIjp7InNjaGVtZSI6Im5vbmUiLCJ0eXBlIjowLCJ2YWx1ZSI6IiJ9LCJib2R5Ijp7ImNvbnRlbnRUeXBlIjoibm9uZSIsImZvcm0iOltdLCJyYXciOiIifSwiaGVhZGVycyI6W10sIm9wdGlvbnMiOnsiY29udGVudFR5cGUiOiJlbGl4aXIiLCJyYXciOiIifSwicGFyYW1zIjpbXSwicGx1Z2lucyI6W3siYWN0aXZlIjpmYWxzZSwiZGVzY3JpcHRpb24iOiJBIGNvbGxlY3Rpb24gb2Ygc3RlcHMsIHVzYWJsZSB3aXRoIFJlcS4iLCJuYW1lIjoiQ3VybFJlcS5QbHVnaW4iLCJ2ZXJzaW9uIjpudWxsfV0sInJlcXVlc3RfdHlwZSI6ImdldCIsInN0ZXBzIjp7ImVycm9yX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9XSwicmVxdWVzdF9zdGVwcyI6W3siYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIHRoZSB1c2VyLWFnZW50IGhlYWRlci4iLCJuYW1lIjoicHV0X3VzZXJfYWdlbnQifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiQXNrcyB0aGUgc2VydmVyIHRvIHJldHVybiBjb21wcmVzc2VkIHJlc3BvbnNlLiIsIm5hbWUiOiJjb21wcmVzc2VkIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkVuY29kZXMgdGhlIHJlcXVlc3QgYm9keS4iLCJuYW1lIjoiZW5jb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBiYXNlIFVSTCBmb3IgYWxsIHJlcXVlc3RzLiIsIm5hbWUiOiJwdXRfYmFzZV91cmwifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyByZXF1ZXN0IGF1dGhlbnRpY2F0aW9uLiIsIm5hbWUiOiJhdXRoIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkFkZHMgcGFyYW1zIHRvIHJlcXVlc3QgcXVlcnkgc3RyaW5nLiIsIm5hbWUiOiJwdXRfcGFyYW1zIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlVzZXMgYSB0ZW1wbGF0ZWQgcmVxdWVzdCBwYXRoLiIsIm5hbWUiOiJwdXRfcGF0aF9wYXJhbXMifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyB0aGUgXCJSYW5nZVwiIHJlcXVlc3QgaGVhZGVyLiIsIm5hbWUiOiJwdXRfcmFuZ2UifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiUGVyZm9ybXMgSFRUUCBjYWNoaW5nIHVzaW5nIGBpZi1tb2RpZmllZC1zaW5jZWAgaGVhZGVyLiIsIm5hbWUiOiJjYWNoZSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIGFkYXB0ZXIgdG8gYHJ1bl9wbHVnLzFgLiIsIm5hbWUiOiJwdXRfcGx1ZyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJDb21wcmVzc2VzIHRoZSByZXF1ZXN0IGJvZHkuIiwibmFtZSI6ImNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBleHBlY3RlZCByZXNwb25zZSBib2R5IGNoZWNrc3VtLiIsIm5hbWUiOiJjaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTaWducyByZXF1ZXN0IHdpdGggQVdTIFNpZ25hdHVyZSBWZXJzaW9uIDQuIiwibmFtZSI6InB1dF9hd3Nfc2lndjQifV0sInJlc3BvbnNlX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJIYW5kbGVzIEhUVFAgNHh4LzV4eCBlcnJvciByZXNwb25zZXMuIiwibmFtZSI6ImhhbmRsZV9odHRwX2Vycm9ycyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJGb2xsb3dzIHJlZGlyZWN0cy4iLCJuYW1lIjoicmVkaXJlY3QifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiRGVjb21wcmVzc2VzIHRoZSByZXNwb25zZSBib2R5IGJhc2VkIG9uIHRoZSBgY29udGVudC1lbmNvZGluZ2AgaGVhZGVyLiIsIm5hbWUiOiJkZWNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiVmVyaWZpZXMgdGhlIHJlc3BvbnNlIGJvZHkgY2hlY2tzdW0uIiwibmFtZSI6InZlcmlmeV9jaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJEZWNvZGVzIHJlc3BvbnNlIGJvZHkgYmFzZWQgb24gdGhlIGRldGVjdGVkIGZvcm1hdC4iLCJuYW1lIjoiZGVjb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjpudWxsLCJuYW1lIjoib3V0cHV0In1dfSwidXJsIjoiaHR0cHM6Ly9wb2tlYXBpLmNvL2FwaS92Mi9wb2tlbW9uL3Bpa2FjaHUiLCJ2YXJpYWJsZSI6InJlc3AiLCJ2ZXJicyI6WyJnZXQiLCJwb3N0IiwicHV0IiwicGF0Y2giLCJkZWxldGUiLCJoZWFkIiwib3B0aW9ucyJdfV0sInF1ZXJ5SW5kZXgiOjB9","chunks":null,"kind":"Elixir.Merquery.SmartCell","livebook_object":"smart_cell"} -->
 
@@ -183,6 +193,59 @@ req =
 resp
 ```
 
-```elixir
+Vous devriez obtenir un objet de type "Map" dans la variables `resp` contenant toute une série de paramètres.,
 
+* arrivez-vous à comprendre les différentes informations chargée depuis internet
+* en particulier, arrivez-vous à retrouver les informations sur les _images tirées du jeu_ ?
+
+<!-- livebook:{"break_markdown":true} -->
+
+Votre _mission_ est désormais de compléter le code ci-après, afin d'extraire une _liste_ de toutes les adresses de toutes les images du pokemon:
+
+```elixir
+defmodule SpriteExtractor do
+
+  def get_sprites(resp) do
+    []
+  end
+  
+end
 ```
+
+Si votre code fonctionne correctement, vous devriez pouvoir exécuter la cellule suivante pour charger toutes les images:
+
+```elixir
+sprites = SpriteExtractor.get_sprites(resp)
+
+# Construit un document "markdown" avec toutes nos images
+images = for x <- sprites do
+  Kino.Markdown.new("![](#{x})")
+end
+Kino.Layout.grid(images, columns: 6)
+```
+
+### Deuxième partie de l'exercice: analyser les images entrantes
+
+Il est temps de charger les image "pour de vrai" et pas seulement les _adresses internet_ de ces images.
+
+Pour se faire, nous allons:
+
+1. repartir de notre liste d'adresses `sprites` obtenue à l'exercice précédent
+2. lancer des tâches pour de chargement des données de l'image avec [`Req.get!/1`](https://hexdocs.pm/req/Req.html#get!/2) et récupérer le "body" de la réponse qui contient les données de l'image
+3. Charger les images avec [`Image.from_binary!/1`](https://hexdocs.pm/image/0.62.0/Image.html#from_binary!/2) puis les transformer en images "affichables" avec [`Image.Kino.show/1`](https://hexdocs.pm/image/0.62.0/Image.Kino.html#show/2)
+
+```elixir
+# Première tâche: charger les images en parallèle
+tasks = []
+
+raw_images = Task.await_many(tasks)
+```
+
+```elixir
+# Deuxième tâche: transformer les données "brutes" en images
+images = []
+
+Kino.Layout.grid(images, columns: 6)
+```
+
+
