@@ -8,15 +8,15 @@ Les différents notebooks utilisés en cours sont disponibles dans le sous-répe
 
 ### Introduction et primitives de base
 
-[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F2-elixi-concurrency%2Fnotebooks%2F1-intro-to-concurrency.livemd)
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F2-elixir-concurrency%2Fnotebooks%2F1-intro-to-concurrency.livemd)
 
-### Pour aller un peu plus loin
+### Les processus liés
 
-[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F2-elixi-concurrency%2Fnotebooks%2F2-process-relations.livemd)
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F2-elixir-concurrency%2Fnotebooks%2F2-process-relations.livemd)
 
-### Approfondir les fonctions
+### Le module `Task`
 
-[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F2-elixi-concurrency%2Fnotebooks%2F3-le-module-task.livemd)
+[![Run in Livebook](https://livebook.dev/badge/v1/blue.svg)](https://livebook.dev/run?url=https%3A%2F%2Fgithub.com%2Fushu%2Felixir-course%2Fblob%2Fmain%2F2-elixir-concurrency%2Fnotebooks%2F3-le-module-task.livemd)
 
 # Contact et questions
 
