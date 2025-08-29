@@ -474,56 +474,54 @@ Pour créer ce lien, **nous avons** simplement **remplacé l'appel à [`spawn/1`
 
 <!-- livebook:{"branch_parent_index":0} -->
 
-## Exercice avancé : limiter le nombre de processus lancés
+## Exercices supplémentaires
 
-_Uniquement si vous êtes **très** en avance !_
+Les petits exercices suivants sont _optionnels_ et uniquement là dans le but de _pratiquer_ la programmation Elixir, _si vous avez le temps_.
 
-_n'hésitez pas à demander de l'aide à votre enseignant•e_
+<!-- livebook:{"break_markdown":true} -->
 
-Modifiez la version concurrente du code de la section "calcul distributé" pour **limiter le nombre de process fils** à un nombre limité, peu importe la taille de la liste en entrée.
+### Attente de la fin de "n" processus enfants
 
-Vous pouvez re-partir du code suivant (c'est le même code que le code de l'exercice précédent):
+Dans l'exercice suivant, vous devrez lancer
+
+* lancer des processus enfants
+* monitorer ces processus
+* creer une fonction d'attente qui va attendre que tous les processus soient arrêtés
+
+Vous pouvez rpartir du code suivant
 
 ```elixir
-defmodule TP2Exercice3 do
-  def sum_all_sync(list_of_lists) do
-    list_of_lists
-    |> Enum.map(&sum_cubes_in_list/1)
-    |> Enum.sum()
-  end
+defmodule TP2ExerciceOpt1 do
+  def run do
+    parent = self()
 
-  def sum_all_parallel(list_of_lists) do
-    master_pid = self()
+    # On lance 3 enfants avec des délais différents
+    delays = [{1, 200}, {2, 400}, {3, 150}]
 
-    for list <- list_of_lists do
-      spawn(fn ->
-        partial_result = sum_cubes_in_list(list)
-        send(master_pid, {self(), partial_result})
-      end)
-    end
-    |> receive_results()
-  end
+    # TODO: démarrer les process enfants et retourner leurs PIDs
+    #    les processus enfants:
+    #    - attendens le temps (ms) passé en argument
+    #    - affichent "Enfant <id> terminé" à la fin de l'exécutino
+    pids = [] 
 
-  # Calcule la som
-  def sum_cubes_in_list(list) do
-    list
-    |> Enum.map(fn x -> x ** 3 end)
-    |> Enum.sum()
-  end
+    # TODO: monitorer tous les processus
 
-  # 💡 Nouveauté : déclaration d'une valeur par défaut pour le paramètre "sum"
-  defp receive_results(worker_pids, sum \\ 0)
-
-  defp receive_results([], sum), do: sum
-
-  defp receive_results(worker_pids, sum) do
-    receive do
-      {worker_pid, partial_sum} ->
-        receive_results(
-          List.delete(worker_pids, worker_pid),
-          sum + partial_sum
-        )
-    end
+    # TODO: lancer une boucle d'attente, qui s'arrête quand length(delays) 
+    #       process enfants ont répondu
   end
 end
+```
+
+Pour tester votre implémentation:
+
+```elixir
+TP2ExerciceOpt1.run()
+```
+
+💡 Vous pouvez également modifier le code ci-dessous pour qu'il prenne en argument une liste de delays et crée un nombre variable de process en conséquence, par ex.:
+
+<!-- livebook:{"force_markdown":true} -->
+
+```elixir
+TP2ExerciceOpt1.run([200, 400, 150]) # équivalent à la version précédente
 ```

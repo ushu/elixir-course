@@ -1,12 +1,12 @@
-# C1N3 – Le module Task
+<!-- livebook:{"file_entries":[{"name":"sprites.png","type":"attachment"}]} -->
+
+# C2N3 – Le module Task
 
 ```elixir
 Mix.install([
   {:kino, "~> 0.16.1"},
   {:req, "~> 0.5.15"},
   {:merquery, "~> 0.3.0"},
-  {:nx, "~> 0.10.0"},
-  {:nx_image, "~> 0.1.2"},
   {:image, "~> 0.62.0"}
 ])
 ```
@@ -25,7 +25,7 @@ Comparons une utilisation simple du module `Task` par rapport à l'approche vue 
 # Lance une tâche
 task =
   Task.async(fn ->
-    # Simule un calcul long de 1 seconde
+    # Simule un calcul long de 1 seconde (1000ms)
     Process.sleep(1000)
     5 * 5
   end)
@@ -179,16 +179,10 @@ Nous allons charger les informations sur le pokemon `pikachu` en effectuant:
 
 Complétez les paramètre dans l'interface ci-dessous pour effectuer votre appel:
 
-<!-- livebook:{"attrs":"eyJxdWVyaWVzIjpbeyJhdXRoIjp7InNjaGVtZSI6Im5vbmUiLCJ0eXBlIjowLCJ2YWx1ZSI6IiJ9LCJib2R5Ijp7ImNvbnRlbnRUeXBlIjoibm9uZSIsImZvcm0iOltdLCJyYXciOiIifSwiaGVhZGVycyI6W10sIm9wdGlvbnMiOnsiY29udGVudFR5cGUiOiJlbGl4aXIiLCJyYXciOiIifSwicGFyYW1zIjpbXSwicGx1Z2lucyI6W3siYWN0aXZlIjpmYWxzZSwiZGVzY3JpcHRpb24iOiJBIGNvbGxlY3Rpb24gb2Ygc3RlcHMsIHVzYWJsZSB3aXRoIFJlcS4iLCJuYW1lIjoiQ3VybFJlcS5QbHVnaW4iLCJ2ZXJzaW9uIjpudWxsfV0sInJlcXVlc3RfdHlwZSI6ImdldCIsInN0ZXBzIjp7ImVycm9yX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9XSwicmVxdWVzdF9zdGVwcyI6W3siYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIHRoZSB1c2VyLWFnZW50IGhlYWRlci4iLCJuYW1lIjoicHV0X3VzZXJfYWdlbnQifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiQXNrcyB0aGUgc2VydmVyIHRvIHJldHVybiBjb21wcmVzc2VkIHJlc3BvbnNlLiIsIm5hbWUiOiJjb21wcmVzc2VkIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkVuY29kZXMgdGhlIHJlcXVlc3QgYm9keS4iLCJuYW1lIjoiZW5jb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBiYXNlIFVSTCBmb3IgYWxsIHJlcXVlc3RzLiIsIm5hbWUiOiJwdXRfYmFzZV91cmwifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyByZXF1ZXN0IGF1dGhlbnRpY2F0aW9uLiIsIm5hbWUiOiJhdXRoIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkFkZHMgcGFyYW1zIHRvIHJlcXVlc3QgcXVlcnkgc3RyaW5nLiIsIm5hbWUiOiJwdXRfcGFyYW1zIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlVzZXMgYSB0ZW1wbGF0ZWQgcmVxdWVzdCBwYXRoLiIsIm5hbWUiOiJwdXRfcGF0aF9wYXJhbXMifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyB0aGUgXCJSYW5nZVwiIHJlcXVlc3QgaGVhZGVyLiIsIm5hbWUiOiJwdXRfcmFuZ2UifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiUGVyZm9ybXMgSFRUUCBjYWNoaW5nIHVzaW5nIGBpZi1tb2RpZmllZC1zaW5jZWAgaGVhZGVyLiIsIm5hbWUiOiJjYWNoZSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIGFkYXB0ZXIgdG8gYHJ1bl9wbHVnLzFgLiIsIm5hbWUiOiJwdXRfcGx1ZyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJDb21wcmVzc2VzIHRoZSByZXF1ZXN0IGJvZHkuIiwibmFtZSI6ImNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBleHBlY3RlZCByZXNwb25zZSBib2R5IGNoZWNrc3VtLiIsIm5hbWUiOiJjaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTaWducyByZXF1ZXN0IHdpdGggQVdTIFNpZ25hdHVyZSBWZXJzaW9uIDQuIiwibmFtZSI6InB1dF9hd3Nfc2lndjQifV0sInJlc3BvbnNlX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJIYW5kbGVzIEhUVFAgNHh4LzV4eCBlcnJvciByZXNwb25zZXMuIiwibmFtZSI6ImhhbmRsZV9odHRwX2Vycm9ycyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJGb2xsb3dzIHJlZGlyZWN0cy4iLCJuYW1lIjoicmVkaXJlY3QifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiRGVjb21wcmVzc2VzIHRoZSByZXNwb25zZSBib2R5IGJhc2VkIG9uIHRoZSBgY29udGVudC1lbmNvZGluZ2AgaGVhZGVyLiIsIm5hbWUiOiJkZWNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiVmVyaWZpZXMgdGhlIHJlc3BvbnNlIGJvZHkgY2hlY2tzdW0uIiwibmFtZSI6InZlcmlmeV9jaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJEZWNvZGVzIHJlc3BvbnNlIGJvZHkgYmFzZWQgb24gdGhlIGRldGVjdGVkIGZvcm1hdC4iLCJuYW1lIjoiZGVjb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjpudWxsLCJuYW1lIjoib3V0cHV0In1dfSwidXJsIjoiaHR0cHM6Ly9wb2tlYXBpLmNvL2FwaS92Mi9wb2tlbW9uL3Bpa2FjaHUiLCJ2YXJpYWJsZSI6InJlc3AiLCJ2ZXJicyI6WyJnZXQiLCJwb3N0IiwicHV0IiwicGF0Y2giLCJkZWxldGUiLCJoZWFkIiwib3B0aW9ucyJdfV0sInF1ZXJ5SW5kZXgiOjB9","chunks":null,"kind":"Elixir.Merquery.SmartCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":"eyJxdWVyaWVzIjpbeyJhdXRoIjp7InNjaGVtZSI6Im5vbmUiLCJ0eXBlIjowLCJ2YWx1ZSI6IiJ9LCJib2R5Ijp7ImNvbnRlbnRUeXBlIjoibm9uZSIsImZvcm0iOltdLCJyYXciOiIifSwiaGVhZGVycyI6W10sIm9wdGlvbnMiOnsiY29udGVudFR5cGUiOiJlbGl4aXIiLCJyYXciOiIifSwicGFyYW1zIjpbeyJhY3RpdmUiOmZhbHNlLCJrZXkiOiIiLCJ0eXBlIjowLCJ2YWx1ZSI6IiJ9XSwicGx1Z2lucyI6W3siYWN0aXZlIjpmYWxzZSwiZGVzY3JpcHRpb24iOiJBIGNvbGxlY3Rpb24gb2Ygc3RlcHMsIHVzYWJsZSB3aXRoIFJlcS4iLCJuYW1lIjoiQ3VybFJlcS5QbHVnaW4iLCJ2ZXJzaW9uIjpudWxsfV0sInJlcXVlc3RfdHlwZSI6ImdldCIsInN0ZXBzIjp7ImVycm9yX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9XSwicmVxdWVzdF9zdGVwcyI6W3siYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIHRoZSB1c2VyLWFnZW50IGhlYWRlci4iLCJuYW1lIjoicHV0X3VzZXJfYWdlbnQifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiQXNrcyB0aGUgc2VydmVyIHRvIHJldHVybiBjb21wcmVzc2VkIHJlc3BvbnNlLiIsIm5hbWUiOiJjb21wcmVzc2VkIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkVuY29kZXMgdGhlIHJlcXVlc3QgYm9keS4iLCJuYW1lIjoiZW5jb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBiYXNlIFVSTCBmb3IgYWxsIHJlcXVlc3RzLiIsIm5hbWUiOiJwdXRfYmFzZV91cmwifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyByZXF1ZXN0IGF1dGhlbnRpY2F0aW9uLiIsIm5hbWUiOiJhdXRoIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IkFkZHMgcGFyYW1zIHRvIHJlcXVlc3QgcXVlcnkgc3RyaW5nLiIsIm5hbWUiOiJwdXRfcGFyYW1zIn0seyJhY3RpdmUiOnRydWUsImRvYyI6IlVzZXMgYSB0ZW1wbGF0ZWQgcmVxdWVzdCBwYXRoLiIsIm5hbWUiOiJwdXRfcGF0aF9wYXJhbXMifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyB0aGUgXCJSYW5nZVwiIHJlcXVlc3QgaGVhZGVyLiIsIm5hbWUiOiJwdXRfcmFuZ2UifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiUGVyZm9ybXMgSFRUUCBjYWNoaW5nIHVzaW5nIGBpZi1tb2RpZmllZC1zaW5jZWAgaGVhZGVyLiIsIm5hbWUiOiJjYWNoZSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTZXRzIGFkYXB0ZXIgdG8gYHJ1bl9wbHVnLzFgLiIsIm5hbWUiOiJwdXRfcGx1ZyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJDb21wcmVzc2VzIHRoZSByZXF1ZXN0IGJvZHkuIiwibmFtZSI6ImNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiU2V0cyBleHBlY3RlZCByZXNwb25zZSBib2R5IGNoZWNrc3VtLiIsIm5hbWUiOiJjaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJTaWducyByZXF1ZXN0IHdpdGggQVdTIFNpZ25hdHVyZSBWZXJzaW9uIDQuIiwibmFtZSI6InB1dF9hd3Nfc2lndjQifV0sInJlc3BvbnNlX3N0ZXBzIjpbeyJhY3RpdmUiOnRydWUsImRvYyI6IlJldHJpZXMgYSByZXF1ZXN0IGluIGZhY2Ugb2YgZXJyb3JzLiIsIm5hbWUiOiJyZXRyeSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJIYW5kbGVzIEhUVFAgNHh4LzV4eCBlcnJvciByZXNwb25zZXMuIiwibmFtZSI6ImhhbmRsZV9odHRwX2Vycm9ycyJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJGb2xsb3dzIHJlZGlyZWN0cy4iLCJuYW1lIjoicmVkaXJlY3QifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiRGVjb21wcmVzc2VzIHRoZSByZXNwb25zZSBib2R5IGJhc2VkIG9uIHRoZSBgY29udGVudC1lbmNvZGluZ2AgaGVhZGVyLiIsIm5hbWUiOiJkZWNvbXByZXNzX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjoiVmVyaWZpZXMgdGhlIHJlc3BvbnNlIGJvZHkgY2hlY2tzdW0uIiwibmFtZSI6InZlcmlmeV9jaGVja3N1bSJ9LHsiYWN0aXZlIjp0cnVlLCJkb2MiOiJEZWNvZGVzIHJlc3BvbnNlIGJvZHkgYmFzZWQgb24gdGhlIGRldGVjdGVkIGZvcm1hdC4iLCJuYW1lIjoiZGVjb2RlX2JvZHkifSx7ImFjdGl2ZSI6dHJ1ZSwiZG9jIjpudWxsLCJuYW1lIjoib3V0cHV0In1dfSwidXJsIjoiaHR0cHM6Ly9wb2tlYXBpLmNvL2FwaS92Mi9wb2tlbW9uL3Bpa2FjaHUiLCJ2YXJpYWJsZSI6InJlc3AiLCJ2ZXJicyI6WyJnZXQiLCJwb3N0IiwicHV0IiwicGF0Y2giLCJkZWxldGUiLCJoZWFkIiwib3B0aW9ucyJdfV0sInF1ZXJ5SW5kZXgiOjB9","chunks":null,"kind":"Elixir.Merquery.SmartCell","livebook_object":"smart_cell"} -->
 
 ```elixir
-req =
-  Req.new(
-    method: :get,
-    url: "https://pokeapi.co/api/v2/pokemon/pikachu",
-    headers: %{},
-    params: %{}
-  )
+req = Req.new(method: :get, url: "", headers: %{}, params: %{})
 {req, resp} = Req.request(req)
 resp
 ```
@@ -200,23 +194,33 @@ Vous devriez obtenir un objet de type "Map" dans la variables `resp` contenant t
 
 <!-- livebook:{"break_markdown":true} -->
 
-Votre _mission_ est désormais de compléter le code ci-après, afin d'extraire une _liste_ de toutes les adresses de toutes les images du pokemon:
+Votre _mission_ est désormais de compléter le code ci-après, afin d'extraire une _liste_ de toutes les adresses de toutes les images du pokemon. Le résutat de l'appel devrait être une liste d'adresses internet pour les différentes images:
+
+![](./files/sprites.png)
+
+à vous de jouer:
 
 ```elixir
 defmodule SpriteExtractor do
-
   def get_sprites(resp) do
-    []
+    [] # TODO
   end
-  
 end
 ```
 
-Si votre code fonctionne correctement, vous devriez pouvoir exécuter la cellule suivante pour charger toutes les images:
+Pour analyser la valeur retourner par votre fonction, exécutez:
 
 ```elixir
 sprites = SpriteExtractor.get_sprites(resp)
+```
 
+Si votre code fonctionne correctement, vous devriez pouvoir exécuter la cellule suivante pour charger toutes les images et les afficher.
+
+Le code fourni va prendre les adresses des images que vous avez extraites, et créer une "page web" avec des éléments "image" pour afficher le résutat. Notez bien que pour l'instant nous ne _chargeons pas les images une à une_: ce sera l'objet de l'étape suivante de l'exercice.
+
+À vous de jouer: exécutez la cellule suivante une fois le code complété 👇
+
+```elixir
 # Construit un document "markdown" avec toutes nos images
 images = for x <- sprites do
   Kino.Markdown.new("![](#{x})")
@@ -224,7 +228,13 @@ end
 Kino.Layout.grid(images, columns: 6)
 ```
 
-### Deuxième partie de l'exercice: analyser les images entrantes
+⚠️ Attention, comme mentionné, le code ci-dessus "triche": nous avons extrait des _addreses_ des images et nous laissons le navigateur les afficher.
+
+Dans la seconde étape ci-dessous, nous allons réellement _charger_ toutes ces images _en parallèle_:
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Deuxième partie de l'exercice: télécharger toutes les images entrantes
 
 Il est temps de charger les image "pour de vrai" et pas seulement les _adresses internet_ de ces images.
 
@@ -234,18 +244,20 @@ Pour se faire, nous allons:
 2. lancer des tâches pour de chargement des données de l'image avec [`Req.get!/1`](https://hexdocs.pm/req/Req.html#get!/2) et récupérer le "body" de la réponse qui contient les données de l'image
 3. Charger les images avec [`Image.from_binary!/1`](https://hexdocs.pm/image/0.62.0/Image.html#from_binary!/2) puis les transformer en images "affichables" avec [`Image.Kino.show/1`](https://hexdocs.pm/image/0.62.0/Image.Kino.html#show/2)
 
+à vous de jouer:
+
 ```elixir
 # Première tâche: charger les images en parallèle
-tasks = []
+tasks = [
+  # 👈 créez une série de tâches avec Task.async() pour télécharger les images
+]
 
 raw_images = Task.await_many(tasks)
 ```
 
 ```elixir
 # Deuxième tâche: transformer les données "brutes" en images
-images = []
+images = [] # 👈 transformez les raw_images en images affichables, en suivant les instructions du TP
 
-Kino.Layout.grid(images, columns: 6)
+ 
 ```
-
-

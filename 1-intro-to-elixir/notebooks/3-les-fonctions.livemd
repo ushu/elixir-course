@@ -551,3 +551,98 @@ Nous n'avons fait qu'éffleurer la surface de ce qui est possible avec les compr
 Nous avons terminé nous tour des principaux éléments de syntaxe d'Elixir.
 
 Vous êtes désormais fin prêts à aborder le [TP final](4-tp-graphes.livemd).
+
+---
+
+## Exercices supplémentaires
+
+Les petits exercices suivants sont _optionnels_ et uniquement là dans le but de _pratiquer_ la programmation Elixir, _si vous avez le temps_.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### La mise au carré
+
+Dans l'esprit du `TP2Exercice2` précédent, écrivez un module qui, prenant une liste, retourne la liste des carrés des éléments de cette liste.
+
+💡 Vous pourriez avoir besoin de la fonction [`Enum.reverse/1`](https://hexdocs.pm/elixir/1.18.3/Enum.html#reverse/1) qui renvoie un liste donnée dans _l'ordre inverse_ de ses éléments.
+
+```elixir
+defmodule TP3ExerciceOpt1 do
+  @doc """
+  Retourne une nouvelles liste avec tous les éléments au carré.
+
+  ## Exemples
+
+    iex> TP3ExerciceOpt1.carre([])
+    []
+
+    iex> TP3ExerciceOpt1.carre([2])
+    [4]
+
+    iex> TP3ExerciceOpt1.carre([1, 2, 3, 4, 5])
+    [1, 4, 9, 16, 25]
+  """
+  def carre(list) do
+    []
+  end
+end
+```
+
+### Le classement
+
+Nous allons nous entraîner à réaliser de multiples traitements sur une liste.
+
+Créer une fonction qui, prenant une liste de chaînes de caractères, va:
+
+* les trier par ordre alphabétique
+* les mettre en majuscule
+
+```elixir
+defmodule TP3ExerciceOpt2 do
+
+  @doc """
+  ## Exemple
+
+    iex> TP3ExerciceOpt2.process_list([])
+    []
+
+    iex> TP3ExerciceOpt2.process_list(["chien"])
+    ["CHIEN"]
+
+    iex> TP3ExerciceOpt2.process_list(["chien", "chat"])
+    ["CHAT", "CHIEN"]
+  """
+  def process_list(list) do
+    []
+  end
+end
+```
+
+en bonus, vous pouvez exécuter la cellule suivante pour tester votre implémentation:
+
+```elixir
+animaux = [
+  "chien",
+  "chat",
+  "cheval",
+  "tortue",
+  "serpent",
+  "souris",
+  "poule",
+  "cochon",
+  "vache",
+  "lion",
+  "tigre",
+  "singe",
+  "lapin",
+  "ours",
+  "zèbre",
+  "girafe",
+  "dauphin",
+  "requin",
+  "pingouin",
+  "perroquet"
+]
+
+TP3ExerciceOpt2.process_list(animaux)
+```

@@ -386,3 +386,35 @@ end
 Vous êtes arrivés au bout de ce notebook, **félicitations** 🎉
 
 Rendez-vous [au notebook suivant](2-aller-plus-loin.livemd) pour continuer votre apprentissage d'Elixir !
+
+---
+
+## Exercices supplémentaires
+
+Les petits exercices suivants sont _optionnels_ et uniquement là dans le but de _pratiquer_ la programmation Elixir, _si vous avez le temps_.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Salutations
+
+Dans cette exercice, vous devez écrire une fonction `salutation/1` qui, lorsqu'on lui donne un prénom, va renvoyer "Bonjour, <prénom> !".
+
+```elixir
+defmodule TP1ExerciceOpt1 do
+
+  @doc """
+  Renvoie une chaîne de caractères, au bon format !
+
+  ## Exercices
+
+    iex> TP1ExerciceOpt1.salutation("Alice")
+    "Bonjour, Alice !"
+
+    iex> TP1ExerciceOpt1.salutation("Bob")
+    "Bonjour, Bob !"
+  """
+  def salutation(nom) do
+    ""
+  end
+end
+```

@@ -358,7 +358,7 @@ l
 
 Dans cet exemple, nous avons créé une liste en mémoire et l'avons modifiée, rien de spectaculaire.
 
-Ré-écrions cet exemple en Elixir:
+Ré-écrions cet exemple en Elixir, en utilisant la méthode [`List.replace_at/3`](https://hexdocs.pm/elixir/1.18.3/List.html#replace_at/3) de la librairie standard Elixir:
 
 ```elixir
 l = [1, 2, 3, 4]
@@ -368,11 +368,12 @@ l
 
 Nous constatons que _la valeur de `l` n'a pas changé_ !
 
-En effet, une fois définir en mémoire, il n'est pas possible de modifier la valeur de cette liste.
+En effet, une fois définie en mémoire, il n'est pas possible de modifier la valeur de cette liste.
 
 Mais alors _qu'a bien pu faire l'appel à `List.replace_at/3`_ ?
 
-En réalité, cet appel n'a pas modifié notre liste, mais a créé une nouvelle liste qui reprend les valeurs de la liste précédente et modifie uniquement la valeur de rang 1. Pour que notre code fonctionne, nous aurions donc dû ré-assigner la variable `l` avec le _résultat_ de l'appel à `replace_at` comme suit (concentrez-vous, le changement est subtil !):
+En réalité, cet appel n'a pas modifié notre liste, mais a créé **une nouvelle liste** qui reprend les valeurs de la liste précédente et modifie uniquement la valeur de rang 1. <br>
+Pour que notre code fonctionne, nous aurions donc dû ré-assigner la variable `l` avec le _résultat_ de l'appel à `replace_at` comme suit (concentrez-vous, le changement est subtil !):
 
 ```elixir
 l = [1, 2, 3, 4]

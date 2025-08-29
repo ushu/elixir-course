@@ -207,27 +207,6 @@ send(enfant, "???")
 # end
 ```
 
-```elixir
-# CORRECTION POSSIBLE
-
-enfant =
-  spawn(fn ->
-    receive do
-      {pid, msg} ->
-        IO.puts(msg)
-        send(pid, :ok)
-    end
-  end)
-
-# À COMPLÉTER
-send(enfant, {self(), "Coucou avec réponse"})
-
-# Attente d'un message de la part de l'enfant
-receive do
-  message -> message
-end
-```
-
 <!-- livebook:{"branch_parent_index":0} -->
 
 ## Un "long-lived process"
@@ -477,3 +456,69 @@ end)
 ---
 
 Vous pouvez maintenant vous rendre au [TP suivant](./2-process-relations.livemd) pour continuer votre exploration de la programmation concurrente avec Elixir.
+
+---
+
+## Exercices supplémentaires
+
+Les petits exercices suivants sont _optionnels_ et uniquement là dans le but de _pratiquer_ la programmation Elixir, _si vous avez le temps_.
+
+<!-- livebook:{"break_markdown":true} -->
+
+### Ping-pong avec limite d'exécution
+
+Voici un code à compléter, qui doit effectuer les opérations suivante:
+
+* lors de l'appel à `start/1` un processus enfant est lancé, et le processus parent commence  lance également une boucle récursive
+* les processus parent et encfant échangent des messages `:ping` et `:pong` pendant un nombre d'échanges passé en argument
+* puis le programme se termine
+
+```elixir
+defmodule TP1ExerciceOpt1 do
+  def start(n) do
+    # Le preocess parent
+    ping = self()
+
+    # Le process enfant
+    pong = spawn(fn -> pong_loop() end)
+
+    # Message initial
+    send(pong, {:ping, ping, n})
+
+    # Démarrage de la boucle du processus parent
+    ping_loop()
+  end
+
+  defp ping_loop do
+    receive do
+      {:pong, pong, n} ->
+        # TODO: 
+        # - lecture du message
+        # - déterminer la condition d'arrêt, et envoyer :stop à l'enfant
+        # - sinon renvoyer un message et boucler
+        ping_loop()
+    end
+  end
+
+  defp pong_loop do
+    receive do
+      {:ping, ping, n} ->
+        # TODO: 
+        # - lecture du message
+        # - déterminer la condition d'arrêt
+        # - sinon renvoyer un message et boucler
+        pong_loop()
+
+      :stop ->
+        IO.puts("[pong] stop")
+        # Pas de récursion ici, le process va s'arrêter !
+    end
+  end
+end
+```
+
+Pour tester votre code, exécutez la cellule suivante:
+
+```elixir
+TP1ExerciceOpt1.start(5)
+```
