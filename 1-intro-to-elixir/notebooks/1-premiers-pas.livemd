@@ -38,7 +38,7 @@ Le seconde valeur affichée – le `:ok` – est la valeur renvoyée par l'appel
 
 ## Prise en main: Elixir c'est comme Python 🚀
 
-Afin de faciliter la prise en main du langage, nous allons commencer par explorer plusieurs **types de données** simples et plusieures fonction disponibles dans la librairies standard d'Elixir.
+Afin de faciliter la prise en main du langage, nous allons commencer par explorer plusieurs **types de données** simples et plusieurs fonctions disponibles dans la librairie standard d'Elixir.
 
 L'objectif de cette section du cours est donc:
 
@@ -50,7 +50,7 @@ L'objectif de cette section du cours est donc:
 
 ### Les types numériques en Elixir
 
-Nous retrouvons en Elixir les mêmes types numériques qu'en Python: à savoir les nombres entiers, et les nombres flottant. Comme vous le constaterez à l'usage, la syntaxe pour définir des variables et pour faire des calculs est très semblable à celle de Python.
+Nous retrouvons en Elixir les mêmes types numériques qu'en Python: à savoir les nombres entiers, et les nombres flottants. Comme vous le constaterez à l'usage, la syntaxe pour définir des variables et pour faire des calculs est très semblable à celle de Python.
 
 Commencez par évaluer la cellule suivante:
 
@@ -61,7 +61,7 @@ a + a
 ```
 
 ```elixir
-# une valeur en nombre flottants
+# une valeur en nombre flottant
 b = 3.14
 3 * b
 ```
@@ -111,7 +111,7 @@ Elixir fait partie des langages dits "fonctionnels". Cette famille de langage pe
 
 Heureusement pour nous, Elixir est certes un langage fonctionnel, mais ce n'est pas un langage typé. Ainsi – comme vous avez pu le constater – son usage ressemble beaucoup à celui de Python, en particulier grâce à la déclaration des variables "au fil de l'eau" sans avoir besoin d'en préciser la nature au préalable.
 
-Ceci étant dit, en tant que langage fonctionnel, les fonctions ont une place absolument centrale dans la programmation en Elixir. Dans ce qui suit, nous allons explorer une des facons de définir une fonction, puis nous découvrirons au fur et à mesure de notre apprentissages d'autres approches et raccourcis syntaxiques disponibles dans le langage.
+Ceci étant dit, en tant que langage fonctionnel, les fonctions ont une place absolument centrale dans la programmation en Elixir. Dans ce qui suit, nous allons explorer une des facons de définir une fonction, puis nous découvrirons au fur et à mesure de notre apprentissage d'autres approches et raccourcis syntaxiques disponibles dans le langage.
 
 <!-- livebook:{"break_markdown":true} -->
 
@@ -135,8 +135,8 @@ end
 on remarque plusieurs choses:
 
 * le "contenu" du module et de la fonction est délimité par un "bloc" qui commence par `do` et se termine par `end`
-* le nom du module est une suite de mots commençant par une majuscule et collés entre eux (on parle de "Pascal Calse")
-* le nom de la fonction est une suite de mots en minuscule relités par des `_` (on parle de "Snake Case")
+* le nom du module est une suite de mots commençant par une majuscule et collés entre eux (on parle de "Pascal Case")
+* le nom de la fonction est une suite de mots en minuscule reliés par des `_` (on parle de "Snake Case")
 
 Ces conventions (en particulier sur le nom de module) sont à respecter lorsque l'on programme en Elixir.
 
@@ -152,7 +152,7 @@ De plus, le module ainsi défini apparaît automatiquement dans la table des mat
 
 Enfin, il est intéressant de noter que la documentation automatique qui apparaît lorsque le curseur de la souris survole un nom de fonction ou de module permet également de sauter vers la définition:
 
-* s'il s'agit d'une fonction définit dans le livebook courant, il est possible de sauter vers la cellul qui l'a définie
+* s'il s'agit d'une fonction définit dans le livebook courant, il est possible de sauter vers la cellule qui l'a définie
 * s'il s'agit d'une fonction de la librairie standard, il est possible de sauter directement vers la documentation de ladite fonction
 
 ![](files/help-jump.png)
@@ -189,8 +189,8 @@ Cet exemple appelle plusieurs remarques:
 * les plus observateurs d'entre vous auront peut-être remarqués que lorsque LiveBook complète le nom de la fonction, il rajoute `/2` à la fin du nom: ![](files/nargs-in-signature.png)
   Il s'agit en fait du **nombre d'arguments** que prend la fonction !
 
-Ce dernier point illustre une différence fondamentale entre Python et Elixir: en Python, si on re-définit un fonction avec le même nom qu'une fonction existante , on "écrase" la première fonction qui devient donc inaccessible.
-Elixir, on contraire, permet d'avoir plusieurs fonction ayant le même nom _pourvu qu'elles n'aient pas le même nombre de paramètres_. Et c'est pour celà que le nombre de paramètre _fait partie du nome de la fonction_.
+Ce dernier point illustre une différence fondamentale entre Python et Elixir: en Python, si on re-définit une fonction avec le même nom qu'une fonction existante , on "écrase" la première fonction qui devient donc inaccessible.
+Elixir, on contraire, permet d'avoir plusieurs fonctions ayant le même nom _pourvu qu'elles n'aient pas le même nombre de paramètres_. Et c'est pour celà que le nombre de paramètre _fait partie du nome de la fonction_.
 
 En pratique:
 
@@ -235,7 +235,7 @@ La formule de conversion, telle que donnée sur [Wikipedia](https://fr.wikipedia
 💡 Vous trouverez ci-dessous un squelette de code à compléter. Ce dernier vous présente des fonctionnalités supplémentaires d'Elixir et Livebook, à savoir:
 
 * la possibilité de documenter une fonction en ajoutant un attribut `@doc` suivi d'une chaine de caractères juste avant la déclaration de la fonction
-* la possibilité d'écrire des chaines de caratères de plusieurs lignes, via les "triples quotes" (similaires à [ce qui exite en Python](https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str))
+* la possibilité d'écrire des chaines de caratères de plusieurs lignes, via les "triples quotes" (similaires à [ce qui existe en Python](https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str))
 * enfin, la possibilté d'inclure des tests simples dans cette documentation: il s'agit des [DocTests Elixir](https://hexdocs.pm/elixir/docs-tests-and-with.html#doctests) qui sont très proches des [doctest Python](https://docs.python.org/3/library/doctest.html)
 
 ```elixir
@@ -314,7 +314,7 @@ String.valid?("Je suis une chaîne de caractères, c'est à dire un tableau cara
 
 ### Concaténation de chaînes de caractères
 
-l'operateur `<>` permet de concaténer des chaînes de caractères – en réalité il concatène n'importe quel `binary` en mémoire, mais à notre niveau on ne l'utilisera que pour des chaînes de caractères – très facilement:
+l'opérateur `<>` permet de concaténer des chaînes de caractères – en réalité il concatène n'importe quel `binary` en mémoire, mais à notre niveau on ne l'utilisera que pour des chaînes de caractères – très facilement:
 
 ```elixir
 "Bonjour " <> "le" <> " monde"
